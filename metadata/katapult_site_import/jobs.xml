@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="KatapultOrderUpdateSFRA" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="shipping" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">shipping</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="cancel" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">cancel</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="complete" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">complete</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="cancelItem" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">cancelItem</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-recurring enabled="false">
+                <recurrence>
+                    <date-from>2020-12-28Z</date-from>
+                    <start-time>19:04:25.000Z</start-time>
+                    <interval>1d</interval>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Monday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Sunday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+
+    <job job-id="KatapultOrderUpdateSG" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="SiteGenesis"/>
+            <step step-id="shipping" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">shipping</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="cancel" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">cancel</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="complete" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">complete</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+            <step step-id="cancelItem" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">cancelItem</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-recurring enabled="false">
+                <recurrence>
+                    <date-from>2020-12-28Z</date-from>
+                    <start-time>21:44:51.000Z</start-time>
+                    <interval>12M</interval>
+                    <day-of-week/>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+
+</jobs>

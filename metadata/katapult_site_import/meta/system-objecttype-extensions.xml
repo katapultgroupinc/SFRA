@@ -33,6 +33,20 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+			<attribute-definition attribute-id="KAT_zibby_id">
+                <display-name xml:lang="x-default">KAT_zibby_id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>			
+			<attribute-definition attribute-id="KAT_shipped">
+                <display-name xml:lang="x-default">Katapult shipped</display-name>
+                <description xml:lang="x-default">To avoid JOBs executing shipped order flows</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="katapult">
@@ -41,6 +55,8 @@
                 <attribute attribute-id="KAT_customer_id"/>
                 <attribute attribute-id="KAT_katapult_id"/>
                 <attribute attribute-id="KAT_completed"/>
+                <attribute attribute-id="KAT_zibby_id"/>
+				<attribute attribute-id="KAT_shipped"/>				
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -94,11 +110,36 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
             </attribute-definition>
+			<attribute-definition attribute-id="KAT_environment">
+                <display-name xml:lang="x-default">Katapult Environment</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <default-value>https://sandbox.katapult.com/</default-value>
+            </attribute-definition>
+			<attribute-definition attribute-id="KAT_maxValue">
+                <display-name xml:lang="x-default">Max. Value for transactions</display-name>
+                <type>double</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>1200.0</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="KAT_minValue">
+                <display-name xml:lang="x-default">Min. Value for transactions</display-name>
+                <type>double</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>350.0</default-value>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="katapult">
                 <display-name xml:lang="x-default">Katapult</display-name>
                 <attribute attribute-id="KAT_APIToken"/>
+				<attribute attribute-id="KAT_environment"/>
+                <attribute attribute-id="KAT_minValue"/>
+                <attribute attribute-id="KAT_maxValue"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

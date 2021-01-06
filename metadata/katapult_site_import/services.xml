@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service-credential service-credential-id="katapult.service.cred">
+        <url>https://sandbox.katapult.com</url>
+    </service-credential>
+
+    <service-profile service-profile-id="katapult.service.prof">
+        <timeout-millis>5000</timeout-millis>
+    </service-profile>
+
+    <service service-id="katapultService">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>ServiceKatapult</log-prefix>
+        <comm-log-enabled>true</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>katapult.service.prof</profile-id>
+        <credential-id>katapult.service.cred</credential-id>
+    </service>
+
+</services>
