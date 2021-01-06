@@ -1,0 +1,34 @@
+<isscript>
+    var assets = require('*/cartridge/scripts/assets.js');
+    assets.addJs('/js/senderBasket.js');
+    var basketID = require("dw/order/BasketMgr").getCurrentBasket().UUID ;
+</isscript>
+
+<div class="tab-pane katapult-content" id="katapult-content" role="tabpanel">
+    <fieldset class="payment-form-fields">
+        <input type="hidden" 
+        class="form-control" 
+        name="${pdict.forms.billingForm.paymentMethod.htmlName}" 
+        value="KATAPULT" />
+        
+        <div class="row">
+            <div class="col-12">
+            <img class="credit-card-option"
+                src="${URLUtils.staticURL('/images/payment.png')}"
+                height="32"
+                alt="${paymentOption.name}"
+                title="${paymentOption.name}"
+        >
+        ${Resource.msg('katapult.payment.message','checkout',null)}                    
+                    <button id="katapultTrue" class="btn-katapult-checkout" style="display:none" type="button"></button>
+
+                    <div id="checkoutBegin" data-begin="${URLUtils.url('Checkout-Begin')}"></div>
+                    <div id="katapultStart" data-katapult-start="${URLUtils.url('Cart-infoShop')}"></div>
+                    <div id="katapultFail" data-katapult-fail="${URLUtils.url('katapultFail-redirect')}"></div>
+                    <div id="katapultOk" data-katapult-ok="${URLUtils.http('CheckoutServices-SubmitPayment', "basket", basketID)}"></div>
+                    <div id="katapultCredentials" data-katapult-env="${dw.system.Site.current.getCustomPreferenceValue('KAT_environment')}" data-katapult-apik="${dw.system.Site.current.getCustomPreferenceValue('KAT_APIToken')}"></div>
+                    <div id="katapultLimit" data-katapult-min="${dw.system.Site.current.getCustomPreferenceValue('KAT_minValue')}" data-katapult-max="${dw.system.Site.current.getCustomPreferenceValue('KAT_maxValue')}"></div>
+            </div>
+        </div>
+    </fieldset>
+</div>

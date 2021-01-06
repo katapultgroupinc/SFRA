@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<payment-settings xmlns="http://www.demandware.com/xml/impex/paymentsettings/2009-09-15">
+   <payment-method method-id="KATAPULT">
+        <name xml:lang="x-default">Katapult Transaction</name>
+        <description xml:lang="x-default">&lt;a class="btn-katapult-checkout" href="#"&gt;&lt;/a&gt;</description>
+        <enabled-flag>true</enabled-flag>
+        <processor-id>katapult</processor-id>
+    </payment-method>
+</payment-settings>

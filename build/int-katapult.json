@@ -1,0 +1,82 @@
+{
+
+  "dependencies": [
+    {
+      "repository": {
+        "url": "git@github.com:SalesforceCommerceCloud/storefront-reference-architecture.git",
+        "type": "git"
+      },
+      "source": {
+        "path": "cartridges"
+      },
+      "npm": {
+        "install": true,
+        "scripts": [
+          "compile:js",
+          "compile:scss",
+          "compile:fonts"
+        ]
+      },
+      "cartridges": [
+        "app_storefront_base",
+        "modules"
+      ]
+    },
+    {
+      "repository": {
+        "url": "../int-katapult",
+        "type": "file"
+      },
+      "source": {
+        "path": "cartridges"
+      },
+      "npm": {
+        "install": true,
+        "scripts": [
+          "compile:js",
+          "compile:scss"
+        ]
+      },
+      "cartridges": [
+        "int_katapult"
+      ]
+    },
+    {
+      "repository": {
+        "url": "../storefrontdata",
+        "type": "file"
+      },
+      "siteImport": {
+        "enabled": "true",
+        "initPath": "demo_data_sfra"
+      }
+    }
+  ],
+
+  "environments": {
+    "sample": {
+      "server": "",
+      "username": "",
+      "password": ""
+    }
+  },
+
+  "settings": {
+    "siteImport": {
+      "enabled": "true",
+      "filenames": {
+          "init": "site_import"
+      }
+    },
+    "project": {
+      "version": "katapult"
+    },
+    "optimize": {
+      "postcss": false,
+      "browserify": false,
+      "js": false,
+      "css": false,
+      "concatenate": true
+    }
+  }
+}

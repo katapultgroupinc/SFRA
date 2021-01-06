@@ -1,0 +1,12 @@
+{
+	"hooks": [
+		{
+			"name": "app.payment.form.processor.katapult",
+			"script": "./hooks/payment/processor/katapult_form_processor"
+		},
+		{
+			"name": "app.payment.processor.katapult",
+			"script": "./hooks/payment/processor/katapult"
+		}
+	]
+}

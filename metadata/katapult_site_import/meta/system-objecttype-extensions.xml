@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="Order">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="KAT_UID">
+                <display-name xml:lang="x-default">Katapult UID</display-name>
+                <description xml:lang="x-default">UID from Katapult</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="KAT_completed">
+                <display-name xml:lang="x-default">Katapult completed</display-name>
+                <description xml:lang="x-default">To avoid JOBs executing completed order flows</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="KAT_customer_id">
+                <display-name xml:lang="x-default">Katapult customer_id</display-name>
+                <description xml:lang="x-default">customer_id from Katapult</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="KAT_katapult_id">
+                <display-name xml:lang="x-default">Katapult katapult_id</display-name>
+                <description xml:lang="x-default">katapult_id from Katapult</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="katapult">
+                <display-name xml:lang="x-default">Katapult</display-name>
+                <attribute attribute-id="KAT_UID"/>
+                <attribute attribute-id="KAT_customer_id"/>
+                <attribute attribute-id="KAT_katapult_id"/>
+                <attribute attribute-id="KAT_completed"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="Product">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="KAT_isLeasable">
+                <display-name xml:lang="x-default">Leasable Product</display-name>
+                <description xml:lang="x-default">Check this option in order to have Katapult available to this product.</description>
+                <type>boolean</type>
+                <site-specific-flag>false</site-specific-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <visible-flag>false</visible-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <order-required-flag>true</order-required-flag>
+                <externally-defined-flag>false</externally-defined-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Katapult">
+                <display-name xml:lang="x-default">Katapult</display-name>
+                <attribute attribute-id="KAT_isLeasable"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="ProductLineItem">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="KAT_cancelItem">
+                <display-name xml:lang="x-default">Katapult cancelItem</display-name>
+                <description xml:lang="x-default">To cancel items on  Katapult.</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="katapult">
+                <display-name xml:lang="x-default">Katapult</display-name>
+                <attribute attribute-id="KAT_cancelItem"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="KAT_APIToken">
+                <display-name xml:lang="x-default">Katapult KAT_APIToken</display-name>
+                <description xml:lang="x-default">Token to use into APIs</description>
+                <type>password</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="katapult">
+                <display-name xml:lang="x-default">Katapult</display-name>
+                <attribute attribute-id="KAT_APIToken"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+</metadata>

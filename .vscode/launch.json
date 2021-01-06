@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+      
+    {
+        "type": "prophet",
+        "request": "launch",
+        "name": "Attach to Sandbox",
+    }
+  ]
+}

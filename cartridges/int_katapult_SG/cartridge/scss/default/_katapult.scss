@@ -1,0 +1,25 @@
+.header-banner .header-promotion {
+    background-color: #990000!important;
+}
+.lg-hide {
+    margin-left: 195px;
+    margin-top: -30px;
+    position: absolute;
+    z-index: 2;
+}
+.md-hide {
+    margin:auto;
+}
+@media screen and (max-width: 768px) {
+    .lg-hide {
+        display: none;
+    }
+}
+@media screen and (min-width: 768px) {
+    .md-hide {
+        display: none;
+    }
+}
+.header-search {
+    width: 260px!important;
+}
