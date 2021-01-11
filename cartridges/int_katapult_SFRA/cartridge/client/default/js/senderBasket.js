@@ -1,14 +1,13 @@
-'use strict';
     require('./connectionKatapult');
 
     $("header .navbar-header .pull-left").after('<a class="btn-katapult-preapprove d-none d-md-inline-block mt-3 ml-2" href="#"></a>');
     $(".menu-group .navbar-nav").append('<a class="btn-katapult-preapprove d-inline-block d-md-none mx-auto" href="#"></a>');
-        
-    $('.btn-katapult-preapprove').on('click', function() {
+
+    $('.btn-katapult-preapprove').on('click', function () {
         katapult.preapprove();
     });
 
-    $('#katapultTrue').add('#checkoutKatapult').on('click', function() {
+    $('#katapultTrue').add('#checkoutKatapult').on('click', function () {
         var KatapultStart = $('#katapultStart').data('katapult-start');
         var katapultFail = $('#katapultFail').data('katapult-fail');
         var katapultOk = $('#katapultOk').data('katapult-ok');
@@ -23,12 +22,12 @@
                 var customerID = data.basketId;
                 var customerEmail = data.order.orderEmail;
                 var itemsCart = data.itemsCart;
-                var totalShippingCost = parseFloat(data.order.totals.totalShippingCost.replace( /^\D+/g, ''));
-                var orderDiscount =  parseFloat(data.order.totals.orderLevelDiscountTotal.value);
-                var shippingDiscount =  parseFloat(data.order.totals.shippingLevelDiscountTotal.value);                
+                var totalShippingCost = parseFloat(data.order.totals.totalShippingCost.replace(/^\D+/g, ''));
+                var orderDiscount = parseFloat(data.order.totals.orderLevelDiscountTotal.value);
+                var shippingDiscount = parseFloat(data.order.totals.shippingLevelDiscountTotal.value);
 
                 // Billing information
-                var oTotal = parseFloat(data.order.priceTotal.replace(/[^0-9\.-]+/g,""));
+                var oTotal = parseFloat(data.order.priceTotal.replace(/[^0-9\.-]+/g, ""));
                 var billingData = data.order.billing.billingAddress.address;
                 var billingArray = {
                     first_name: billingData.firstName,
@@ -43,7 +42,7 @@
                     phone: billingData.phone,
                     email: customerEmail
                 };
-                
+
                 // Shipping information
                 var itemsShipping = data.order.shipping;
                 var s = 0;
@@ -62,7 +61,7 @@
                         email: customerEmail
                     };
                 }
-                
+
                 if (oTotal >= katapultMin && oTotal <= katapultMax) {
                     getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail);
                 } else {
@@ -70,12 +69,9 @@
                 }
             }
         });
-        
     });
 
-
-        
-    function getBasket(itemsCart,billingArray,customerID, shippingAddressData, customerEmail,  totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail){
+    function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {
         var checkout = {
             customer: {
                 billing: billingArray,
@@ -88,8 +84,8 @@
                 customer_id: customerID,
                 shipping_amount: totalShippingCost,
                 discounts: [
-                    {discount_name: "orderDiscount", discount_amount: orderDiscount},
-                    {discount_name: "shippingDiscount", discount_amount: shippingDiscount}
+                    { discount_name: "orderDiscount", discount_amount: orderDiscount },
+                    { discount_name: "shippingDiscount", discount_amount: shippingDiscount }
                 ]
             },
 
@@ -101,7 +97,4 @@
             };
             katapult.checkout.set(checkout);
             katapult.checkout.load();
-        
     }
-
-

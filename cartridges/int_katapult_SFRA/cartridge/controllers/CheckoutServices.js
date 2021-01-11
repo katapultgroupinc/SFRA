@@ -1,10 +1,9 @@
-'use strict';
-
 var server = require('server');
 var checkoutService = module.superModule;
     server.extend(checkoutService);
 var URLUtils = require('dw/web/URLUtils');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
+var Transaction = require('dw/system/Transaction');
 
 function sleep(milliseconds) {
     const date = Date.now();
@@ -16,15 +15,13 @@ function sleep(milliseconds) {
 
 /**
  *  Handle Ajax payment (and billing) form submit
- */ 
+ */
 server.prepend(
     'SubmitPayment',
     server.middleware.https,
     function (req, res, next) {
-        res.setHttpHeader("Access-Control-Allow-Origin", req.httpHeaders.origin);        
-        var Transaction = require('dw/system/Transaction');
-
-        if (req.body && req.httpMethod == "POST") {
+        res.setHttpHeader("Access-Control-Allow-Origin", req.httpHeaders.origin);
+        if (req.body && req.httpMethod === "POST") {
             var bodyObject = JSON.parse(req.body);
             // If it comes from katapult
             if (bodyObject.zibby_id) {
@@ -35,30 +32,28 @@ server.prepend(
                 );
                 if (!isRecordExist) {
                     Transaction.begin();
-                    var transaction = CustomObjectMgr.createCustomObject(
-                    "katapult_transactions",
-                    basket
-                    );
-                    transaction.custom.KAT_customer_id = bodyObject.customer_id;
-                    transaction.custom.KAT_zibby_id = bodyObject.zibby_id;
-                    transaction.custom.KAT_uid = bodyObject.uid;
+                        var transaction = CustomObjectMgr.createCustomObject(
+                        "katapult_transactions",
+                        basket
+                        );
+                        transaction.custom.KAT_customer_id = bodyObject.customer_id;
+                        transaction.custom.KAT_zibby_id = bodyObject.zibby_id;
+                        transaction.custom.KAT_uid = bodyObject.uid;
                     Transaction.commit();
                 } else {
                     Transaction.begin();
-                    isRecordExist.custom.KAT_customer_id = bodyObject.customer_id;
-                    isRecordExist.custom.KAT_zibby_id = bodyObject.zibby_id;
-                    isRecordExist.custom.KAT_uid = bodyObject.uid;
+                        isRecordExist.custom.KAT_customer_id = bodyObject.customer_id;
+                        isRecordExist.custom.KAT_zibby_id = bodyObject.zibby_id;
+                        isRecordExist.custom.KAT_uid = bodyObject.uid;
                     Transaction.commit();
                 }
 
                 res.json({ message: "OK" });
                 this.emit("route:Complete", req, res);
-                return;
             } else { // else go to the next controller
               next();
-            }            
-        } else if (req.httpHeaders.origin != "https://sandbox.katapult.com") {
-            
+            }
+        } else if (req.httpHeaders.origin !== "https://sandbox.katapult.com") {
             var PaymentManager = require('dw/order/PaymentMgr');
             var HookManager = require('dw/system/HookMgr');
             var Resource = require('dw/web/Resource');
@@ -70,19 +65,19 @@ server.prepend(
 
             isKatapult = paymentMethodIdValue === 'KATAPULT' ? true : false;
 
-            if (!isKatapult){
+            if (!isKatapult) {
                 next();
                 return;
             }
 
             if (session.custom.hasKatapult !== "yes") {
-                isKatapult?session.custom.hasKatapult = 'yes':session.custom.hasKatapult = '';
+                isKatapult ? session.custom.hasKatapult = 'yes' : session.custom.hasKatapult = '';
                 // verify billing form data
                 var billingFormErrors = COHelpers.validateBillingForm(paymentForm.addressFields);
                 var contactInfoFormErrors = COHelpers.validateFields(paymentForm.contactInfoFields);
 
                 var formFieldErrors = [];
-                //set viewdata
+                // set viewdata
                 if (Object.keys(billingFormErrors).length) {
                     formFieldErrors.push(billingFormErrors);
                 } else {
@@ -93,8 +88,8 @@ server.prepend(
                         address2: { value: paymentForm.addressFields.address2.value },
                         city: { value: paymentForm.addressFields.city.value },
                         postalCode: { value: paymentForm.addressFields.postalCode.value },
-                        countryCode: { value: paymentForm.addressFields.country.value },
-                        
+                        countryCode: { value: paymentForm.addressFields.country.value }
+
                     };
 
                     if (Object.prototype.hasOwnProperty.call(paymentForm.addressFields, 'states')) {
@@ -102,7 +97,6 @@ server.prepend(
                     }
                 }
 
-                
                 if (Object.keys(contactInfoFormErrors).length) {
                     formFieldErrors.push(contactInfoFormErrors);
                 } else {
@@ -128,8 +122,7 @@ server.prepend(
                         'processForm',
                         req,
                         paymentForm,
-                        viewData
-                    );
+                        viewData);
                 } else {
                     paymentFormResult = HookManager.callHook('app.payment.form.processor.default_form_processor', 'processForm');
                 }
@@ -155,7 +148,6 @@ server.prepend(
                     var HookMgr = require('dw/system/HookMgr');
                     var PaymentMgr = require('dw/order/PaymentMgr');
                     var PaymentInstrument = require('dw/order/PaymentInstrument');
-                    var Transaction = require('dw/system/Transaction');
                     var AccountModel = require('*/cartridge/models/account');
                     var OrderModel = require('*/cartridge/models/order');
                     var Locale = require('dw/util/Locale');
@@ -169,7 +161,7 @@ server.prepend(
                     var paymentInstruments = currentBasket.getPaymentInstruments();
                     var iterator = paymentInstruments.iterator();
                     var paymentInstrument = null;
-                    Transaction.wrap(function() {
+                    Transaction.wrap(function () {
                         while (iterator.hasNext()) {
                             paymentInstrument = iterator.next();
                             currentBasket.removePaymentInstrument(paymentInstrument);
@@ -231,11 +223,11 @@ server.prepend(
                             billingAddress.setPhone(billingData.phone.value);
                             currentBasket.setCustomerEmail(billingData.email.value);
                         }
-                    
+
                         var paymentInstrument = currentBasket.createPaymentInstrument(
                             paymentMethodIdValue, currentBasket.totalGrossPrice
                         );
-                        //paymentInstrument.custom.adyenPaymentMethod = paymentMethodIdValue;
+                        // paymentInstrument.custom.adyenPaymentMethod = paymentMethodIdValue;
                         paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
                     });
 
@@ -243,8 +235,7 @@ server.prepend(
                     if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
                         var noPaymentMethod = {};
                         session.custom.hasKatapult = "";
-                        noPaymentMethod[billingData.paymentMethod.htmlName] =
-                            Resource.msg('error.no.selected.payment.method', 'payment', null);
+                        noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'payment', null);
 
                         delete billingData.paymentInformation;
 
@@ -273,8 +264,7 @@ server.prepend(
                         result = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
                             'Handle',
                             currentBasket,
-                            billingData.paymentInformation
-                        );
+                            billingData.paymentInformation);
                     } else {
                         result = HookMgr.callHook('app.payment.processor.default', 'Handle');
                     }
@@ -296,8 +286,7 @@ server.prepend(
                             'savePaymentInformation',
                             req,
                             currentBasket,
-                            billingData
-                        );
+                            billingData);
                     } else {
                         HookMgr.callHook('app.payment.form.processor.default', 'savePaymentInformation');
                     }
@@ -345,8 +334,7 @@ server.prepend(
                     );
 
                     delete billingData.paymentInformation;
-                    
-                    
+
                     res.json({
                         renderedPaymentInstruments: renderedStoredPaymentInstrument,
                         customer: accountModel,
@@ -363,7 +351,7 @@ server.prepend(
             }
         } else {
                 res.json({
-                    message : "OK"
+                    message: "OK"
                 });
 
             this.emit('route:Complete', req, res);
@@ -371,6 +359,9 @@ server.prepend(
     }
 );
 
+/**
+ *  Place Order
+ */
 server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
@@ -396,13 +387,13 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
-    var basketID = currentBasket.UUID ;
+    var basketID = currentBasket.UUID;
     var isRecordExist = CustomObjectMgr.getCustomObject('katapult_transactions', basketID);
 
     var paymentForm = server.forms.getForm('billing');
-    isKat = (paymentForm.paymentMethod.value == 'KATAPULT') ? true : false;
+    isKat = (paymentForm.paymentMethod.value === 'KATAPULT') ? true : false;
 
-    if (!isKat){
+    if (!isKat) {
         if (isRecordExist) {
             CustomObjectMgr.remove(isRecordExist);
         }
@@ -505,7 +496,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
-    //Set katapult values
+    // Set katapult values
     if (isRecordExist) {
         Transaction.wrap(function () {
             order.custom.KAT_customer_id = isRecordExist.custom.KAT_customer_id;
@@ -515,8 +506,8 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
             order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_PAID);
             var paymentInstruments = order.getPaymentInstruments('KATAPULT');
             if (paymentInstruments) {
-                for(paymentInstrument in paymentInstruments) {
-                    if (paymentInstrument.paymentMethod == "KATAPULT") {
+                for (paymentInstrument in paymentInstruments) {
+                    if (paymentInstrument.paymentMethod === "KATAPULT") {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
                     }
                 }
@@ -578,14 +569,14 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
 
     var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var orderID = {
-        "order_id" : order.orderNo
+        order_id: order.orderNo
     };
     connectionService.ordersKat.confirm(order.custom.KAT_UID, JSON.stringify(orderID));
 
     // Reset usingMultiShip after successful Order placement
     req.session.privacyCache.set('usingMultiShipping', false);
     session.custom.hasKatapult = "";
-    res.redirect(URLUtils.url('Order-Confirm','ID', order.orderNo, 'token',order.orderToken).toString());
+    res.redirect(URLUtils.url('Order-Confirm', 'ID', order.orderNo, 'token', order.orderToken).toString());
 
     return next();
 });

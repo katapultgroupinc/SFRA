@@ -6,7 +6,7 @@
 </isscript>
 <div> 
     <form id="getCart" action="${URLUtils.url('Cart-infoShop')}" class="fluffy-form" method="get" name="fluffy-form">
-        <input type="hidden" id="urlCancel" name="urlCancel" value="${URLUtils.url('katapultFail-cancel')}">
+        <input type="hidden" id="urlCancel" name="urlCancel" value="${URLUtils.url('KatapultFail-cancel')}">
     </form>  
 </div>
 

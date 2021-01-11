@@ -4,10 +4,6 @@
  *    For all details and documentation:
  *    https://github.com/SalesforceCommerceCloud/sitegenesis
  */
-
-'use strict';
-
 require('../../../app_storefront_core/cartridge/js/app');
 require('./senderBasket')();
-//require('./checkout')();
-
+// require('./checkout')();

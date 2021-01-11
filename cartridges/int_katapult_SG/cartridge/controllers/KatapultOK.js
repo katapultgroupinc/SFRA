@@ -1,5 +1,3 @@
-"use strict";
-
 /* Script Modules */
 var app = require('*/cartridge/scripts/app');
 var guard = require('*/cartridge/scripts/guard');
@@ -15,10 +13,15 @@ function sleep(milliseconds) {
       currentDate = Date.now();
     } while (currentDate - date < milliseconds);
 }
-function payment() {
-    var req = request;   
 
-    if (req.httpParameterMap.requestBodyAsString && req.httpMethod == "POST") {
+/**
+ * Katapult payment success.
+ * @return {object} JSON object success.
+ */
+function payment() {
+    var req = request;
+
+    if (req.httpParameterMap.requestBodyAsString && req.httpMethod === "POST") {
         var bodyObject = JSON.parse(req.httpParameterMap.requestBodyAsString);
         // If it comes from katapult
         if (bodyObject.zibby_id) {
@@ -47,17 +50,13 @@ function payment() {
             let r = require('*/cartridge/scripts/util/Response');
 
             r.renderJSON({ message: "OK" });
-            return;
-        } else { // else go to the next controller
-          return
-        }            
-    } else if (req.httpHeaders.origin != "https://sandbox.katapult.com") {
+        }
+        // return;
+    } else if (req.httpHeaders.origin !== "https://sandbox.katapult.com") {
         sleep(5000);
-        var basketUUID =  BasketMgr.getCurrentBasket().UUID;
+        var basketUUID = BasketMgr.getCurrentBasket().UUID;
         var placeOrderResult = app.getController('COPlaceOrder').Start();
-        if (placeOrderResult.error) {
-            return;
-        } else {
+        if (!placeOrderResult.error) {
             showConfirmation(placeOrderResult.Order, basketUUID);
         }
     } else {
@@ -67,12 +66,10 @@ function payment() {
             success: "OK",
             message: "Teste"
         });
-        return;
+    }
 
-    }    
-
-        //response.redirect(dw.web.URLUtils.https('COBilling-Billing'));
-        //https://zzrn-013.sandbox.us01.dx.commercecloud.salesforce.com/on/demandware.store/Sites-SiteGenesis-Site/en_US/KatapultOK-Payment
+        // response.redirect(dw.web.URLUtils.https('COBilling-Billing'));
+        // https://zzrn-013.sandbox.us01.dx.commercecloud.salesforce.com/on/demandware.store/Sites-SiteGenesis-Site/en_US/KatapultOK-Payment
 }
 
 /**
@@ -84,10 +81,10 @@ function payment() {
 function showConfirmation(order, basketID) {
     var CustomObjectMgr = require('dw/object/CustomObjectMgr');
     var isRecordExist = CustomObjectMgr.getCustomObject('katapult_transactions', basketID);
-    
-    isKat = (order.paymentInstrument.paymentMethod == 'KATAPULT') ? true : false;
 
-    if (!isKat){
+    isKat = (order.paymentInstrument.paymentMethod === 'KATAPULT') ? true : false;
+
+    if (!isKat) {
         if (isRecordExist) {
             CustomObjectMgr.remove(isRecordExist);
         }
@@ -102,8 +99,8 @@ function showConfirmation(order, basketID) {
             order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_PAID);
             var paymentInstruments = order.getPaymentInstruments('KATAPULT');
             if (paymentInstruments) {
-                for each (let paymentInstrument in paymentInstruments) {
-                    if (paymentInstrument.paymentMethod.equals("KATAPULT")) {
+                for (paymentInstrument in paymentInstruments) {
+                    if (paymentInstrument.paymentMethod === "KATAPULT") {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
                     }
                 }
@@ -124,7 +121,7 @@ function showConfirmation(order, basketID) {
 
     var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var orderID = {
-        "order_id" : order.orderNo
+        order_id: order.orderNo
     };
     connectionService.ordersKat.confirm(order.custom.KAT_UID, JSON.stringify(orderID));
 
@@ -138,4 +135,3 @@ function showConfirmation(order, basketID) {
 }
 
 exports.Payment = guard.ensure(['https'], payment);
-//exports.Payment = guard.ensure(['post', 'https'], payment);

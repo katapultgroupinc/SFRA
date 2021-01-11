@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Controller for the billing logic. It is used by both the single shipping and the multishipping
  * functionality and is responsible for payment method selection and entering a billing address.
@@ -32,7 +30,6 @@ var guard = require('*/cartridge/scripts/guard');
  * If neither address is available, it prepopulates with the default address of the authenticated customer.
  */
 function initAddressForm(cart) {
-
     if (app.getForm('singleshipping').object.shippingAddress.useAsBillingAddress.value === true) {
         app.getForm('billing').object.billingAddress.addressFields.firstName.value = app.getForm('singleshipping').object.shippingAddress.addressFields.firstName.value;
         app.getForm('billing').object.billingAddress.addressFields.lastName.value = app.getForm('singleshipping').object.shippingAddress.addressFields.lastName.value;
@@ -48,7 +45,6 @@ function initAddressForm(cart) {
         app.getForm('billing.billingAddress.addressFields').copyFrom(cart.getBillingAddress());
         app.getForm('billing.billingAddress.addressFields.states').copyFrom(cart.getBillingAddress());
     } else if (customer.authenticated && customer.profile.addressBook.preferredAddress !== null) {
-
         app.getForm('billing.billingAddress.addressFields').copyFrom(customer.profile.addressBook.preferredAddress);
         app.getForm('billing.billingAddress.addressFields.states').copyFrom(customer.profile.addressBook.preferredAddress);
     }
@@ -110,7 +106,6 @@ function returnToForm(cart, params) {
  * @param {object} params - (optional) if passed, added to view properties so they can be accessed in the template.
  */
 function start(cart, params) {
-
     app.getController('COShipping').PrepareShipments();
 
     Transaction.wrap(function () {
@@ -169,7 +164,6 @@ function initCreditCardList(cart) {
 function publicStart() {
     var cart = app.getModel('Cart').get();
     if (cart) {
-
         // Initializes all forms of the billing page including: - address form - email address - coupon form
         initAddressForm(cart);
         initEmailAddress(cart);
@@ -188,7 +182,7 @@ function publicStart() {
         app.getForm('billing.couponCode').clear();
         app.getForm('billing.giftCertCode').clear();
 
-        start(cart, {ApplicableCreditCards: creditCardList.ApplicableCreditCards});
+        start(cart, { ApplicableCreditCards: creditCardList.ApplicableCreditCards });
     } else {
         app.getController('Cart').Show();
     }
@@ -199,7 +193,12 @@ function publicStart() {
  * Removes and then adds currently added gift certificates to reflect order total changes.
  */
 function adjustGiftCertificates() {
-    var i, j, cart, gcIdList, gcID, gc;
+    var i,
+j,
+cart,
+gcIdList,
+gcID,
+gc;
     cart = app.getModel('Cart').get();
 
     if (cart) {
@@ -217,11 +216,11 @@ function adjustGiftCertificates() {
 
                 gc = GiftCertificateMgr.getGiftCertificateByCode(gcID);
 
-                if ((gc) && // make sure exists
-                (gc.isEnabled()) && // make sure it is enabled
-                (gc.getStatus() !== GiftCertificate.STATUS_PENDING) && // make sure it is available for use
-                (gc.getStatus() !== GiftCertificate.STATUS_REDEEMED) && // make sure it has not been fully redeemed
-                (gc.balance.currencyCode === cart.getCurrencyCode())) {// make sure the GC is in the right currency
+                if ((gc) // make sure exists
+                && (gc.isEnabled()) // make sure it is enabled
+                && (gc.getStatus() !== GiftCertificate.STATUS_PENDING) // make sure it is available for use
+                && (gc.getStatus() !== GiftCertificate.STATUS_REDEEMED) // make sure it has not been fully redeemed
+                && (gc.balance.currencyCode === cart.getCurrencyCode())) { // make sure the GC is in the right currency
                     cart.createGiftCertificatePaymentInstrument(gc);
                 }
             }
@@ -261,22 +260,27 @@ function handleCoupon() {
  * @returns {object} JSON object containing the status of the gift certificate.
  */
 function redeemGiftCertificate(giftCertCode) {
-    var cart, gc, newGCPaymentInstrument, gcPaymentInstrument, status, result;
+    var cart,
+gc,
+newGCPaymentInstrument,
+gcPaymentInstrument,
+status,
+result;
     cart = app.getModel('Cart').get();
 
     if (cart) {
         // fetch the gift certificate
         gc = GiftCertificateMgr.getGiftCertificateByCode(giftCertCode);
 
-        if (!gc) {// make sure exists
+        if (!gc) { // make sure exists
             result = new Status(Status.ERROR, GiftCertificateStatusCodes.GIFTCERTIFICATE_NOT_FOUND);
-        } else if (!gc.isEnabled()) {// make sure it is enabled
+        } else if (!gc.isEnabled()) { // make sure it is enabled
             result = new Status(Status.ERROR, GiftCertificateStatusCodes.GIFTCERTIFICATE_DISABLED);
-        } else if (gc.getStatus() === GiftCertificate.STATUS_PENDING) {// make sure it is available for use
+        } else if (gc.getStatus() === GiftCertificate.STATUS_PENDING) { // make sure it is available for use
             result = new Status(Status.ERROR, GiftCertificateStatusCodes.GIFTCERTIFICATE_PENDING);
-        } else if (gc.getStatus() === GiftCertificate.STATUS_REDEEMED) {// make sure it has not been fully redeemed
+        } else if (gc.getStatus() === GiftCertificate.STATUS_REDEEMED) { // make sure it has not been fully redeemed
             result = new Status(Status.ERROR, GiftCertificateStatusCodes.GIFTCERTIFICATE_INSUFFICIENT_BALANCE);
-        } else if (gc.balance.currencyCode !== cart.getCurrencyCode()) {// make sure the GC is in the right currency
+        } else if (gc.balance.currencyCode !== cart.getCurrencyCode()) { // make sure the GC is in the right currency
             result = new Status(Status.ERROR, GiftCertificateStatusCodes.GIFTCERTIFICATE_CURRENCY_MISMATCH);
         } else {
             newGCPaymentInstrument = Transaction.wrap(function () {
@@ -301,7 +305,12 @@ function redeemGiftCertificate(giftCertCode) {
  * In either case, it will initialize the credit card list in the billing form and call the {@link module:controllers/COBilling~start|start} function.
  */
 function updateCreditCardSelection() {
-    var cart, applicableCreditCards, UUID, selectedCreditCard, instrumentsIter, creditCardInstrument;
+    var cart,
+applicableCreditCards,
+UUID,
+selectedCreditCard,
+instrumentsIter,
+creditCardInstrument;
     cart = app.getModel('Cart').get();
 
     applicableCreditCards = initCreditCardList(cart).ApplicableCreditCards;
@@ -310,7 +319,6 @@ function updateCreditCardSelection() {
 
     selectedCreditCard = null;
     if (UUID && applicableCreditCards && !applicableCreditCards.empty) {
-
         // find credit card in payment instruments
         instrumentsIter = applicableCreditCards.iterator();
         while (instrumentsIter.hasNext()) {
@@ -342,7 +350,6 @@ function updateCreditCardSelection() {
  * method is bml and the ssn cannot be validated.
  */
 function resetPaymentForms() {
-
     var cart = app.getModel('Cart').get();
     var status = Transaction.wrap(function () {
         if (app.getForm('billing').object.paymentMethods.selectedPaymentMethodID.value.equals('PayPal')) {
@@ -411,7 +418,7 @@ function validateBilling() {
  * need a valid payment method.
  */
 function handlePaymentSelection(cart) {
-    var a= "test";
+    var a = "test";
     var result;
     if (empty(app.getForm('billing').object.paymentMethods.selectedPaymentMethodID.value)) {
         if (cart.getTotalGrossPrice() > 0) {
@@ -452,10 +459,8 @@ function handlePaymentSelection(cart) {
  * @returns {boolean} true
  */
 function handleBillingAddress(cart) {
-
     var billingAddress = cart.getBillingAddress();
     Transaction.wrap(function () {
-
         if (!billingAddress) {
             billingAddress = cart.createBillingAddress();
         }
@@ -475,11 +480,12 @@ function handleBillingAddress(cart) {
  * If a cart does not already exist, calls the {@link module:controllers/Cart~Show|Cart controller Show function}.
  */
 function updateAddressDetails() {
-    var cart, address, billingAddress;
+    var cart,
+address,
+billingAddress;
     cart = app.getModel('Cart').get();
 
     if (cart) {
-
         address = customer.getAddressBook().getAddress(empty(request.httpParameterMap.addressID.value) ? request.httpParameterMap.dwfrm_billing_addressList.value : request.httpParameterMap.addressID.value);
 
         app.getForm('billing.billingAddress.addressFields').copyFrom(address);
@@ -492,7 +498,7 @@ function updateAddressDetails() {
         initCreditCardList(cart);
         start(cart);
     } else {
-        //@FIXME redirect
+        // @FIXME redirect
         app.getController('Cart').Show();
     }
 }
@@ -509,7 +515,6 @@ function updateAddressDetails() {
  * - __selectAddress__ - calls the {@link module:controllers/COBilling~updateAddressDetails|updateAddressDetails} function.
  */
 function billing() {
-
     app.getForm('billing').handleAction({
         applyCoupon: function () {
             var couponCode = request.httpParameterMap.couponCode.stringValue || request.httpParameterMap.dwfrm_billing_couponCode.stringValue;
@@ -518,16 +523,13 @@ function billing() {
             app.getController('Cart').AddCoupon(couponCode);
 
             handleCoupon();
-            return;
         },
         creditCardSelect: function () {
             updateCreditCardSelection();
-            return;
         },
         paymentSelect: function () {
             // ToDo - pass parameter ?
             publicStart();
-            return;
         },
         redeemGiftCert: function () {
             var status = redeemGiftCertificate(app.getForm('billing').object.giftCertCode.htmlValue);
@@ -538,19 +540,16 @@ function billing() {
             } else {
                 returnToForm(app.getModel('Cart').get());
             }
-
-            return;
         },
         save: function () {
             Transaction.wrap(function () {
                 var cart = app.getModel('Cart').get();
-	
-                if (!resetPaymentForms() || !validateBilling() || !handleBillingAddress(cart) || // Performs validation steps, based upon the entered billing address
+
+                if (!resetPaymentForms() || !validateBilling() || !handleBillingAddress(cart) // Performs validation steps, based upon the entered billing address
                 // and address options.
-                handlePaymentSelection(cart).error) {// Performs payment method specific checks, such as credit card verification.
+                || handlePaymentSelection(cart).error) { // Performs payment method specific checks, such as credit card verification.
                     returnToForm(cart);
                 } else {
-    
                     if (customer.authenticated && app.getForm('billing').object.billingAddress.addToAddressBook.value) {
                         app.getModel('Profile').get(customer.profile).addAddressToAddressBook(cart.getBillingAddress());
                     }
@@ -560,13 +559,11 @@ function billing() {
 
                     // A successful billing page will jump to the next checkout step.
                     app.getController('COSummary').Start();
-                    return;
                 }
             });
         },
         selectAddress: function () {
             updateAddressDetails();
-            return;
         }
     });
 }
@@ -576,7 +573,8 @@ function billing() {
 * Otherwise, renders a JSON object with information about the gift certificate code and the success and status of the redemption.
 */
 function redeemGiftCertificateJson() {
-    var giftCertCode, giftCertStatus;
+    var giftCertCode,
+giftCertStatus;
 
     giftCertCode = request.httpParameterMap.giftCertCode.stringValue;
     giftCertStatus = redeemGiftCertificate(giftCertCode);
@@ -619,7 +617,6 @@ function removeGiftCertificate() {
  * Renders the checkout/minisummary template, which includes the mini cart order totals and shipment summary.
  */
 function updateSummary() {
-
     var cart = app.getModel('Cart').get();
 
     Transaction.wrap(function () {
@@ -639,7 +636,6 @@ function updateSummary() {
  * events.
  */
 function editAddress() {
-
     app.getForm('billing').objectaddress.clearFormElement();
 
     var address = customer.getAddressBook().getAddress(request.httpParameterMap.addressID.stringValue);
@@ -664,7 +660,6 @@ function editAddress() {
  * If they do own product lists, sets the ContinueURL to {@link module:controllers/COBilling~EditBillingAddress|EditBillingAddress} and renders the checkout/billing/billingaddressdetails template.
  */
 function editBillingAddress() {
-
     app.getForm('returnToForm').handleAction({
         apply: function () {
             if (!app.getForm('billingaddress').copyTo(app.getForm('billingaddress').object)) {
@@ -716,7 +711,11 @@ function getGiftCertificateBalance() {
  * credit card.
  */
 function selectCreditCard() {
-    var cart, applicableCreditCards, selectedCreditCard, instrumentsIter, creditCardInstrument;
+    var cart,
+applicableCreditCards,
+selectedCreditCard,
+instrumentsIter,
+creditCardInstrument;
     cart = app.getModel('Cart').get();
 
     applicableCreditCards = initCreditCardList(cart).ApplicableCreditCards;
@@ -725,7 +724,6 @@ function selectCreditCard() {
     // ensure mandatory parameter 'CreditCardUUID' and 'CustomerPaymentInstruments'
     // in pipeline dictionary and collection is not empty
     if (request.httpParameterMap.creditCardUUID.value && applicableCreditCards && !applicableCreditCards.empty) {
-
         // find credit card in payment instruments
         instrumentsIter = applicableCreditCards.iterator();
         while (instrumentsIter.hasNext()) {
@@ -752,7 +750,10 @@ function selectCreditCard() {
  * @return {Boolean} true if existing payment instruments are valid, false if not.
  */
 function validatePayment(cart) {
-    var paymentAmount, countryCode, invalidPaymentInstruments, result;
+    var paymentAmount,
+countryCode,
+invalidPaymentInstruments,
+result;
     if (app.getForm('billing').object.fulfilled.value) {
         paymentAmount = cart.getNonGiftCertificateAmount();
         countryCode = Countries.getCurrent({
@@ -784,7 +785,9 @@ function validatePayment(cart) {
  * @return {Boolean} true if credit card is successfully saved.
  */
 function saveCreditCard() {
-    var i, creditCards, newCreditCard;
+    var i,
+creditCards,
+newCreditCard;
 
     if (customer.authenticated && app.getForm('billing').object.paymentMethods.creditCard.saveCard.value) {
         creditCards = customer.getProfile().getWallet().getPaymentInstruments(PaymentInstrument.METHOD_CREDIT_CARD);
@@ -807,7 +810,6 @@ function saveCreditCard() {
                 }
             }
         });
-
     }
     return true;
 }

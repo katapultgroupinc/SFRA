@@ -1,12 +1,9 @@
-'use strict';
-
 var addressHelpers = require('base/checkout/address');
 var shippingHelpers = require('base/checkout/shipping');
 var billingHelpers = require('base/checkout/billing');
 var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
-
 
 /**
  * Create the jQuery Checkout Plugin.
@@ -68,13 +65,13 @@ var scrollAnimate = require('base/components/scrollAnimate');
             hideFaker(currentStage);
         }
 
-        function hideFaker(currentStage){
-            if(checkoutStages[currentStage]=='shipping'){
-                $('#katapultFake').css('display','none'); 
-            }else{
-                $('#katapultFake').css('display','block'); 
+        function hideFaker(currentStage) {
+            if (checkoutStages[currentStage] === 'shipping') {
+                $('#katapultFake').css('display', 'none');
+            } else {
+                $('#katapultFake').css('display', 'block');
             }
-        } 
+        }
         //
         // Local member methods of the Checkout plugin
         //
@@ -101,8 +98,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                     // Submit the Shipping Address Form
                     //
                     var isMultiShip = $('#checkout-main').hasClass('multi-ship');
-                    var formSelector = isMultiShip ?
-                        '.multi-shipping .active form' : '.single-shipping .shipping-form';
+                    var formSelector = isMultiShip
+                        ? '.multi-shipping .active form' : '.single-shipping .shipping-form';
                     var form = $(formSelector);
 
                     if (isMultiShip && form.length === 0) {
@@ -122,11 +119,11 @@ var scrollAnimate = require('base/components/scrollAnimate');
                                     defer.resolve();
                                 } else if (data.message && $('.shipping-error .alert-danger').length < 1) {
                                     var errorMsg = data.message;
-                                    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error ' +
-                                        'fade show" role="alert">' +
-                                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                                        '<span aria-hidden="true">&times;</span>' +
-                                        '</button>' + errorMsg + '</div>';
+                                    var errorHtml = '<div class="alert alert-danger alert-dismissible valid-cart-error '
+                                        + 'fade show" role="alert">'
+                                        + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                                        + '<span aria-hidden="true">&times;</span>'
+                                        + '</button>' + errorMsg + '</div>';
                                     $('.shipping-error').append(errorHtml);
                                     scrollAnimate($('.shipping-error'));
                                     defer.reject();
@@ -178,7 +175,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                     //
                     // Submit the Billing Address Form
                     //
-                    
+
                     formHelpers.clearPreviousErrors('.payment-form');
 
                     var billingAddressForm = $('#dwfrm_billing .billing-address-block :input').serialize();
@@ -208,7 +205,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                     var activeTabId = $('.tab-pane.active').attr('id');
                     var paymentInfoSelector = '#dwfrm_billing .' + activeTabId + ' .payment-form-fields :input';
                     var paymentInfoForm = $(paymentInfoSelector).serialize();
-                    
+
                     $('body').trigger('checkout:serializeBilling', {
                         form: $(paymentInfoSelector),
                         data: paymentInfoForm,
@@ -218,32 +215,31 @@ var scrollAnimate = require('base/components/scrollAnimate');
                             }
                         }
                     });
-                    
-                    var paymentForm = billingAddressForm + '&' + contactInfoForm + '&' + paymentInfoForm;                   
+
+                    var paymentForm = billingAddressForm + '&' + contactInfoForm + '&' + paymentInfoForm;
 
                     if ($('.data-checkout-stage').data('customer-type') === 'registered') {
                         // if payment method is credit card
                         if ($('.payment-information').data('payment-method-id') === 'CREDIT_CARD') {
                             if (!($('.payment-information').data('is-new-payment'))) {
-                                var cvvCode = $('.saved-payment-instrument.' +
-                                    'selected-payment .saved-payment-security-code').val();
+                                var cvvCode = $('.saved-payment-instrument.'
+                                    + 'selected-payment .saved-payment-security-code').val();
 
                                 if (cvvCode === '') {
-                                    var cvvElement = $('.saved-payment-instrument.' +
-                                        'selected-payment ' +
-                                        '.form-control');
+                                    var cvvElement = $('.saved-payment-instrument.'
+                                        + 'selected-payment '
+                                        + '.form-control');
                                     cvvElement.addClass('is-invalid');
                                     scrollAnimate(cvvElement);
                                     defer.reject();
-                                    return defer;                                 
+                                    return defer;
                                 }
 
-                                var $savedPaymentInstrument = $('.saved-payment-instrument' +
-                                    '.selected-payment'
-                                );
+                                var $savedPaymentInstrument = $('.saved-payment-instrument'
+                                    + '.selected-payment');
 
-                                paymentForm += '&storedPaymentUUID=' +
-                                    $savedPaymentInstrument.data('uuid');
+                                paymentForm += '&storedPaymentUUID='
+                                    + $savedPaymentInstrument.data('uuid');
 
                                 paymentForm += '&securityCode=' + cvvCode;
                             }
@@ -251,8 +247,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                     }
                      // disable the next:Place Order button here
                     $('body').trigger('checkout:disableButton', '.next-step-button button');
-                    $("#katapultTest").val()
-                    if ($('.payment-information').data('payment-method-id') === "KATAPULT" && $("#katapultTest").val() == "true" || $('.payment-information').data('payment-method-id') !== "KATAPULT") {
+                    $("#katapultTest").val();
+                    if (($('.payment-information').data('payment-method-id') === "KATAPULT" && $("#katapultTest").val() === "true") || $('.payment-information').data('payment-method-id') !== "KATAPULT") {
                         $.ajax({
                             url: $('#dwfrm_billing').attr('action'),
                             method: 'POST',
@@ -284,17 +280,17 @@ var scrollAnimate = require('base/components/scrollAnimate');
 
                                     defer.reject();
                                 } else {
-                                    //open modal automaty
+                                    // open modal automaty
                                     if ($('.payment-information').data('payment-method-id') === "KATAPULT") {
                                         $('#katapultTrue').trigger("click");
-                                        $('#katapultTrue').css('display','none');
+                                        $('#katapultTrue').css('display', 'none');
                                         $('.place-order').hide();
                                         $('#checkoutKatapult').show();
-                                    }else{
+                                    } else {
                                         $('.place-order').show();
                                         $('#checkoutKatapult').hide();
                                     }
-                                    
+
                                     //
                                     // Populate the Address Summary
                                     //
@@ -331,7 +327,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                         return;
                     }
                     return defer;
-                } else if (stage === 'placeOrder') {
+                } if (stage === 'placeOrder') {
                     // disable the placeOrder button here
                     $('body').trigger('checkout:disableButton', '.next-step-button button');
                     $.ajax({
@@ -355,8 +351,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                                     token: data.orderToken
                                 };
 
-                                continueUrl += (continueUrl.indexOf('?') !== -1 ? '&' : '?') +
-                                    Object.keys(urlParams).map(function (key) {
+                                continueUrl += (continueUrl.indexOf('?') !== -1 ? '&' : '?')
+                                    + Object.keys(urlParams).map(function (key) {
                                         return key + '=' + encodeURIComponent(urlParams[key]);
                                     }).join('&');
 
@@ -421,7 +417,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                                 members.gotoStage('shipping');
                             }
                         });
-                    }else{
+                    } else {
                         $('.place-order').hide();
                         if (!$('#checkout-main').hasClass('multi-ship')) {
                             $('body').trigger('shipping:selectSingleShipping');
@@ -441,7 +437,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                                 members.gotoStage('payment');
                             }
                         });
-                    }else{
+                    } else {
                         $('.place-order').hide();
                         members.gotoStage('payment');
                     }
@@ -451,8 +447,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                 // remember stage (e.g. shipping)
                 //
                 updateUrl(members.currentStage);
-                
-                //  
+
+                //
                 // Listen for foward/back button press and move to correct checkout-stage
                 //
                 $(window).on('popstate', function (e) {
@@ -460,8 +456,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                     // Back button when event state less than current state in ordered
                     // checkoutStages array.
                     //
-                    if (e.state === null ||
-                        checkoutStages.indexOf(e.state) < members.currentStage) {
+                    if (e.state === null
+                        || checkoutStages.indexOf(e.state) < members.currentStage) {
                         members.handlePrevStage(false);
                     } else if (checkoutStages.indexOf(e.state) > members.currentStage) {
                         // Forward button  pressed
@@ -565,7 +561,6 @@ var scrollAnimate = require('base/components/scrollAnimate');
     };
 }(jQuery));
 
-
 var exports = {
     initialize: function () {
         $('#checkout-main').checkout();
@@ -604,7 +599,6 @@ var exports = {
             $(button).prop('disabled', false);
         });
     }
-
 
 };
 

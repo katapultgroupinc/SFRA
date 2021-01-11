@@ -1,17 +1,42 @@
-'use strict';
-
 module.exports = function () {
-
     require('./connectionKatapult');
 
     $(".primary-logo").after('<a class="btn-katapult-preapprove lg-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
     $(".menu-utility-user").append('<a class="btn-katapult-preapprove md-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
-        
-    $('.btn-katapult-preapprove').on('click', function() {
+
+    $('.btn-katapult-preapprove').on('click', function () {
         katapult.preapprove();
     });
 
-    $('#katapultTrue').on('click', function() {
+    function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {
+        var checkout = {
+            customer: {
+                billing: billingArray,
+                shipping: shippingAddressData
+            },
+
+            items: itemsCart,
+
+            checkout: {
+                customer_id: customerID,
+                shipping_amount: totalShippingCost,
+                discounts: [
+                    { discount_name: "orderDiscount", discount_amount: orderDiscount },
+                    { discount_name: "shippingDiscount", discount_amount: shippingDiscount }
+                ]
+            },
+
+            urls: {
+                return: katapultOk,
+                cancel: katapultFail
+            }
+
+            };
+            katapult.checkout.set(checkout);
+            katapult.checkout.load();
+    }
+
+    $('#katapultTrue').on('click', function () {
         var KatapultStart = $('#katapultStart').data('katapult-start');
         var katapultFail = $('#katapultFail').data('katapult-fail');
         var katapultOk = $('#katapultOk').data('katapult-ok');
@@ -27,8 +52,8 @@ module.exports = function () {
                 var customerEmail = data.account.profile.email;
                 var itemsCart = data.itemsCart;
                 var totalShippingCost = parseFloat(data.order.totals.totalShippingCost);
-                var orderDiscount =  parseFloat(data.order.totals.orderLevelDiscountTotal.value);
-                var shippingDiscount =  parseFloat(data.order.totals.shippingLevelDiscountTotal.value);                
+                var orderDiscount = parseFloat(data.order.totals.orderLevelDiscountTotal.value);
+                var shippingDiscount = parseFloat(data.order.totals.shippingLevelDiscountTotal.value);
 
                 // Billing information
                 var oTotal = parseFloat(data.order.priceTotal);
@@ -46,12 +71,13 @@ module.exports = function () {
                     phone: billingData.phone,
                     email: customerEmail
                 };
-                
+
                 // Shipping information
                 var itemsShipping = data.order.shipping;
                 var s = 0;
+                var shippingAddressData = {};
                 for (s in itemsShipping) {
-                    var shippingAddressData = {
+                        shippingAddressData = {
                         first_name: itemsShipping[s].shippingAddress.firstName,
                         middle_name: "",
                         last_name: itemsShipping[s].shippingAddress.lastName,
@@ -65,7 +91,7 @@ module.exports = function () {
                         email: customerEmail
                     };
                 }
-                
+
                 if (oTotal >= katapultMin && oTotal <= katapultMax) {
                     getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail);
                 } else {
@@ -73,54 +99,21 @@ module.exports = function () {
                 }
             }
         });
-        
     });
 
-
-        
-    function getBasket(itemsCart,billingArray,customerID, shippingAddressData, customerEmail,  totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail){
-        var checkout = {
-            customer: {
-                billing: billingArray,
-                shipping: shippingAddressData
-            },
-
-            items: itemsCart,
-
-            checkout: {
-                customer_id: customerID,
-                shipping_amount: totalShippingCost,
-                discounts: [
-                    {discount_name: "orderDiscount", discount_amount: orderDiscount},
-                    {discount_name: "shippingDiscount", discount_amount: shippingDiscount}
-                ]
-            },
-
-            urls: {
-                return: katapultOk,
-                cancel: katapultFail
-            }
-
-            };
-            katapult.checkout.set(checkout);
-            katapult.checkout.load();
-        
-    }
-$(document).ready(function() {
-    $('.payment-method-options').click(function(){
-
+$(document).ready(function () {
+    $('.payment-method-options').click(function () {
         var $selectPaymentMethod = $('.payment-method-options');
         var selectedPaymentMethod = $selectPaymentMethod.find(':checked').val();
-        
-        if(selectedPaymentMethod != "KATAPULT") {
+
+        if (selectedPaymentMethod !== "KATAPULT") {
               $(".div-KATAPULT").hide();
         } else {
               $(".div-KATAPULT").show();
         }
-        
     });
-    if($("#katapultTrue").length) {
+    if ($("#katapultTrue").length) {
         $("#katapultTrue").trigger("click");
     }
 });
-}
+};

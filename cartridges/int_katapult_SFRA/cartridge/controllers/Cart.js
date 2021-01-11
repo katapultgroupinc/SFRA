@@ -1,8 +1,11 @@
-    'use strict';
-
     var server = require('server');
     var cart = module.superModule;
     server.extend(cart);
+
+    /**
+ * Katapult get basket to generate checkout to Katapult.
+ * @return {object} JSON object.
+ */
     server.get('infoShop', server.middleware.https, function (req, res, next) {
         var BasketMgr = require('dw/order/BasketMgr');
         var CartModel = require('*/cartridge/models/cart');
@@ -17,17 +20,17 @@
         var currentCustomer = req.currentCustomer.raw;
         var currentLocale = Locale.getLocale(req.locale.id);
         var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
-        
+
         var itemsBasket = currentBasket.productLineItems;
         var itemsCart = [];
         for (i in itemsBasket) {
             var isLeasable = itemsBasket[i].product.custom.KAT_isLeasable;
-            if(empty(isLeasable) || isLeasable == false){
+            if (empty(isLeasable) || isLeasable === false) {
                 isLeasable = false;
             }
 
             var price = itemsBasket[i].basePrice.value.toFixed(2);
-            
+
             itemsCart.push({
                 display_name: itemsBasket[i].productName,
                 sku: itemsBasket[i].productID,
@@ -38,15 +41,15 @@
 
             var isEmpty = itemsBasket[i].optionProductLineItems.empty;
 
-            if(isEmpty == false){
-                var price = itemsBasket[i].optionProductLineItems[0].basePrice.value.toFixed(2);
+            if (isEmpty === false) {
+                var wPrice = itemsBasket[i].optionProductLineItems[0].basePrice.value.toFixed(2);
 
-                itemsCart[itemsCart.length -1].warranty ={
-                    unit_price: price,
+                itemsCart[itemsCart.length - 1].warranty = {
+                    unit_price: wPrice,
                     display_name: itemsBasket[i].optionProductLineItems[0].productName,
                     sku: itemsBasket[i].optionProductLineItems[0].UUID
                 };
-            }   
+            }
         }
 
         var orderModel = new OrderModel(
@@ -59,7 +62,7 @@
                 containerView: 'basket'
             }
         );
-        
+
         res.json({
             success: true,
             basketModel: basketModel,

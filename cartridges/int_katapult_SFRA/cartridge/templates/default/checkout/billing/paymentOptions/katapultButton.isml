@@ -24,7 +24,7 @@
 
                     <div id="checkoutBegin" data-begin="${URLUtils.url('Checkout-Begin')}"></div>
                     <div id="katapultStart" data-katapult-start="${URLUtils.url('Cart-infoShop')}"></div>
-                    <div id="katapultFail" data-katapult-fail="${URLUtils.url('katapultFail-redirect')}"></div>
+                    <div id="katapultFail" data-katapult-fail="${URLUtils.url('KatapultFail-redirect')}"></div>
                     <div id="katapultOk" data-katapult-ok="${URLUtils.http('CheckoutServices-SubmitPayment', "basket", basketID)}"></div>
                     <div id="katapultCredentials" data-katapult-env="${dw.system.Site.current.getCustomPreferenceValue('KAT_environment')}" data-katapult-apik="${dw.system.Site.current.getCustomPreferenceValue('KAT_APIToken')}"></div>
                     <div id="katapultLimit" data-katapult-min="${dw.system.Site.current.getCustomPreferenceValue('KAT_minValue')}" data-katapult-max="${dw.system.Site.current.getCustomPreferenceValue('KAT_maxValue')}"></div>
