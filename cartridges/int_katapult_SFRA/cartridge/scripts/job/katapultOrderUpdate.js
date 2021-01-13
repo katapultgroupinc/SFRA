@@ -182,9 +182,9 @@ function cancelItem () {
                         }
                     } else {
                         if (order.productLineItems.length == 1) {
-                            Logger.info("--> ERROR. You cannot cancel a item in this order. For orders that have just one product you have to cancel the entire order."); 
+                            Logger.info("--> ERROR. " + orderNo + " You cannot cancel a item in this order. For orders that have just one product you have to cancel the entire order."); 
                         }
-                        Logger.info("--> ERROR. You cannot cancel a item in this order");
+                        Logger.info("--> ERROR. " + orderNo + " You cannot cancel a item in this order");
                     } 
                     
             }
