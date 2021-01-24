@@ -6,6 +6,7 @@ function getCustomLeasable() {
     var currentBasket = BasketMgr.getCurrentBasket();
     var itemsFeatures = currentBasket.productLineItems;
     var itemsLeasable = 0;
+    var index = 0;
     for (index in itemsFeatures) {
         var Kat_isLeasable = itemsFeatures[index].product.custom.KAT_isLeasable;
         if (Kat_isLeasable || Kat_isLeasable == true) {

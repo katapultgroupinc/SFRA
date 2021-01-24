@@ -1,1 +1,111 @@
-!function(t){var e={};function a(n){if(e[n])return e[n].exports;var r=e[n]={i:n,l:!1,exports:{}};return t[n].call(r.exports,r,r.exports,a),r.l=!0,r.exports}a.m=t,a.c=e,a.d=function(t,e,n){a.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},a.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},a.t=function(t,e){if(1&e&&(t=a(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(a.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var r in t)a.d(n,r,function(e){return t[e]}.bind(null,r));return n},a.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return a.d(e,"a",e),e},a.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},a.p="",a(a.s=13)}({13:function(t,e,a){"use strict";a(2),$("header .navbar-header .pull-left").after('<a class="btn-katapult-preapprove d-none d-md-inline-block mt-3 ml-2" href="#"></a>'),$(".menu-group .navbar-nav").append('<a class="btn-katapult-preapprove d-inline-block d-md-none mx-auto" href="#"></a>'),$(".btn-katapult-preapprove").on("click",(function(){katapult.preapprove()})),$("#katapultTrue").add("#checkoutKatapult").on("click",(function(){var t=$("#katapultStart").data("katapult-start"),e=$("#katapultFail").data("katapult-fail"),a=$("#katapultOk").data("katapult-ok"),n=parseFloat($("#katapultLimit").data("katapult-min")),r=parseFloat($("#katapultLimit").data("katapult-max"));$.ajax({url:t,type:"get",dataType:"json",success:function(t){var s=t.basketId,o=t.order.orderEmail,i=t.itemsCart,p=parseFloat(t.order.totals.totalShippingCost.replace(/^\D+/g,"")),l=parseFloat(t.order.totals.orderLevelDiscountTotal.value),d=parseFloat(t.order.totals.shippingLevelDiscountTotal.value),u=parseFloat(t.order.priceTotal.replace(/[^0-9\.-]+/g,"")),c=t.order.billing.billingAddress.address,m={first_name:c.firstName,middle_name:"",last_name:c.lastName,address:c.address1,address2:c.address2,city:c.city,state:c.stateCode,country:c.countryCode.displayValue,zip:c.postalCode,phone:c.phone,email:o},f=t.order.shipping,k=0;for(k in f)var h={first_name:f[k].shippingAddress.firstName,middle_name:"",last_name:f[k].shippingAddress.lastName,address:f[k].shippingAddress.address1,address2:f[k].shippingAddress.address2,city:f[k].shippingAddress.city,state:f[k].shippingAddress.stateCode,country:f[k].shippingAddress.countryCode.displayValue,zip:f[k].shippingAddress.postalCode,phone:f[k].shippingAddress.phone,email:o};u>=n&&u<=r?function(t,e,a,n,r,s,o,i,p,l){var d={customer:{billing:e,shipping:n},items:t,checkout:{customer_id:a,shipping_amount:s,discounts:[{discount_name:"orderDiscount",discount_amount:o},{discount_name:"shippingDiscount",discount_amount:i}]},urls:{return:p,cancel:l}};katapult.checkout.set(d),katapult.checkout.load()}(i,m,s,h,0,p,l,d,a,e):alert("Katapult cannot be used to this payment, the payment amount has to be between "+n+" and "+r)}})}))},2:function(t,e,a){"use strict";$(document).ready((function(){var t=$("#katapultCredentials").data("katapult-apik"),e=$("#katapultCredentials").data("katapult-env");!function(t,e){var a,n,r;t.katapult=t.katapult||{},n=!1,(a=document.createElement("script")).type="text/javascript",a.async=!0,a.src=e.environment+"/plugin/js/katapult.js",a.onload=a.onreadystatechange=function(){n||this.readyState&&"complete"!=this.readyState||(n=!0,t.katapult.setConfig(e.api_key))},(r=document.getElementsByTagName("script")[0]).parentNode.insertBefore(a,r);var s=document.createElement("link");s.setAttribute("rel","stylesheet"),s.setAttribute("type","text/css"),s.setAttribute("href",e.environment+"/plugin/css/katapult.css");var o=document.querySelector("head");o.insertBefore(s,o.firstChild)}(window,{api_key:t||"1e5a123829af41d9e4889ff7e65aeff2f7d77ab3",environment:e||"https://sandbox.katapult.com"})}))}});
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./cartridges/int_katapult_SFRA/cartridge/client/default/js/senderBasket.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./cartridges/int_katapult_SFRA/cartridge/client/default/js/connectionKatapult.js":
+/*!****************************************************************************************!*\
+  !*** ./cartridges/int_katapult_SFRA/cartridge/client/default/js/connectionKatapult.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("$(document).ready(function () {\r\n    var katapultApiK = $('#katapultCredentials').data('katapult-apik');\r\n    var katapultEnv = $('#katapultCredentials').data('katapult-env');\r\n\r\n    var katapultConfig = {\r\n        api_key: katapultApiK,\r\n        environment: katapultEnv\r\n    };\r\n\r\n    !(function (e, t) {\r\n e.katapult = e.katapult || {}; var n,\r\ni,\r\nr; i = !1, n = document.createElement(\"script\"), n.type = \"text/javascript\", n.async = !0, n.src = t.environment + \"/\" + \"plugin/js/katapult.js\", n.onload = n.onreadystatechange = function () { i || this.readyState && this.readyState != \"complete\" || (i = !0, e.katapult.setConfig(t.api_key)); }, r = document.getElementsByTagName(\"script\")[0], r.parentNode.insertBefore(n, r); var s = document.createElement(\"link\"); s.setAttribute(\"rel\", \"stylesheet\"), s.setAttribute(\"type\", \"text/css\"), s.setAttribute(\"href\", t.environment + \"/\" + \"plugin/css/katapult.css\"); var a = document.querySelector(\"head\"); a.insertBefore(s, a.firstChild);\r\n}(window, katapultConfig));\r\n});\r\n\n\n//# sourceURL=webpack:///./cartridges/int_katapult_SFRA/cartridge/client/default/js/connectionKatapult.js?");
+
+/***/ }),
+
+/***/ "./cartridges/int_katapult_SFRA/cartridge/client/default/js/senderBasket.js":
+/*!**********************************************************************************!*\
+  !*** ./cartridges/int_katapult_SFRA/cartridge/client/default/js/senderBasket.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("    __webpack_require__(/*! ./connectionKatapult */ \"./cartridges/int_katapult_SFRA/cartridge/client/default/js/connectionKatapult.js\");\r\n\r\n    $(\"header .navbar-header .pull-left\").after('<a class=\"btn-katapult-preapprove d-none d-md-inline-block mt-3 ml-2\" href=\"#\"></a>');\r\n    $(\".menu-group .navbar-nav\").append('<a class=\"btn-katapult-preapprove d-inline-block d-md-none mx-auto\" href=\"#\"></a>');\r\n\r\n    $('.btn-katapult-preapprove').on('click', function () {\r\n        katapult.preapprove();\r\n    });\r\n\r\n    $('#katapultTrue').add('#checkoutKatapult').on('click', function () {\r\n        var KatapultStart = $('#katapultStart').data('katapult-start');\r\n        var katapultFail = $('#katapultFail').data('katapult-fail');\r\n        var katapultOk = $('#katapultOk').data('katapult-ok');\r\n        var katapultMin = parseFloat($('#katapultLimit').data('katapult-min'));\r\n        var katapultMax = parseFloat($('#katapultLimit').data('katapult-max'));\r\n\r\n        $.ajax({\r\n            url: KatapultStart,\r\n            type: 'get',\r\n            dataType: 'json',\r\n            success: function (data) {\r\n                var customerID = data.basketId;\r\n                var customerEmail = data.order.orderEmail;\r\n                var itemsCart = data.itemsCart;\r\n                var totalShippingCost = parseFloat(data.order.totals.totalShippingCost.replace(/^\\D+/g, ''));\r\n                var orderDiscount = parseFloat(data.order.totals.orderLevelDiscountTotal.value);\r\n                var shippingDiscount = parseFloat(data.order.totals.shippingLevelDiscountTotal.value);\r\n\r\n                // Billing information\r\n                var oTotal = parseFloat(data.order.priceTotal.replace(/[^0-9\\.-]+/g, \"\"));\r\n                var billingData = data.order.billing.billingAddress.address;\r\n                var billingArray = {\r\n                    first_name: billingData.firstName,\r\n                    middle_name: \"\",\r\n                    last_name: billingData.lastName,\r\n                    address: billingData.address1,\r\n                    address2: billingData.address2,\r\n                    city: billingData.city,\r\n                    state: billingData.stateCode,\r\n                    country: billingData.countryCode.displayValue,\r\n                    zip: billingData.postalCode,\r\n                    phone: billingData.phone,\r\n                    email: customerEmail\r\n                };\r\n\r\n                // Shipping information\r\n                var itemsShipping = data.order.shipping;\r\n                var s = 0;\r\n                for (s in itemsShipping) {\r\n                    var shippingAddressData = {\r\n                        first_name: itemsShipping[s].shippingAddress.firstName,\r\n                        middle_name: \"\",\r\n                        last_name: itemsShipping[s].shippingAddress.lastName,\r\n                        address: itemsShipping[s].shippingAddress.address1,\r\n                        address2: itemsShipping[s].shippingAddress.address2,\r\n                        city: itemsShipping[s].shippingAddress.city,\r\n                        state: itemsShipping[s].shippingAddress.stateCode,\r\n                        country: itemsShipping[s].shippingAddress.countryCode.displayValue,\r\n                        zip: itemsShipping[s].shippingAddress.postalCode,\r\n                        phone: itemsShipping[s].shippingAddress.phone,\r\n                        email: customerEmail\r\n                    };\r\n                }\r\n\r\n                if (oTotal >= katapultMin && oTotal <= katapultMax) {\r\n                    getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail);\r\n                } else {\r\n                    alert(\"Katapult cannot be used to this payment, the payment amount has to be between \" + katapultMin + \" and \" + katapultMax);\r\n                }\r\n            }\r\n        });\n    });\r\n\r\n    function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {\r\n        var checkout = {\r\n            customer: {\r\n                billing: billingArray,\r\n                shipping: shippingAddressData\r\n            },\r\n\r\n            items: itemsCart,\r\n\r\n            checkout: {\r\n                customer_id: customerID,\r\n                shipping_amount: totalShippingCost,\r\n                discounts: [\r\n                    { discount_name: \"orderDiscount\", discount_amount: orderDiscount },\r\n                    { discount_name: \"shippingDiscount\", discount_amount: shippingDiscount }\r\n                ]\r\n            },\r\n\r\n            urls: {\r\n                return: katapultOk,\r\n                cancel: katapultFail\r\n            }\r\n\r\n            };\r\n            katapult.checkout.set(checkout);\r\n            katapult.checkout.load();\n    }\r\n\n\n//# sourceURL=webpack:///./cartridges/int_katapult_SFRA/cartridge/client/default/js/senderBasket.js?");
+
+/***/ })
+
+/******/ });

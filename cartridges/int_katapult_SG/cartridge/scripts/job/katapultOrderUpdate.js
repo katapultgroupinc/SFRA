@@ -13,15 +13,15 @@ var Transaction = require('dw/system/Transaction');
 
 function complete(){
     var orders = OrderMgr.searchOrders(
-        "custom.KAT_completed != true  AND " +         
+        "custom.KAT_completed != 'true'  AND " +         
         "status = " + ORDER_STATUS_COMPLETED, " creationDate asc");
 
 	while (orders.hasNext()) {
         var order = orders.next();
         var paymentMethod = order.paymentInstrument.paymentMethod;
-        if (paymentMethod == "KATAPULT" && order.custom.KAT_completed !== true) {
+        if (paymentMethod == "KATAPULT" && order.custom.KAT_completed !== 'true') {
             Transaction.wrap(function(){               
-                order.custom.KAT_completed = true;               
+                order.custom.KAT_completed = 'true';               
             });
             Logger.info("--> Katapult completed process " + order.orderNo + " -- kat_uid -->" + order.custom.KAT_UID);
         }
@@ -32,7 +32,7 @@ function shipping(){
     var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var orders = OrderMgr.searchOrders(
         "custom.KAT_UID != '' AND " +
-        "custom.KAT_shipped != true AND " +
+        "custom.KAT_shipped != 'true' AND " +
         "(status = " + ORDER_STATUS_CREATED + " OR " + 
         "status = " + ORDER_STATUS_NEW + " OR " + 
         "status = " + ORDER_STATUS_OPEN + ") AND " + 
@@ -43,17 +43,17 @@ function shipping(){
         var order = orders.next();
         var paymentMethod = order.paymentInstrument.paymentMethod;
         if (paymentMethod == "KATAPULT") {
-            if (order.custom.KAT_completed !== true && order.custom.KAT_shipped !== true) {
+            if (order.custom.KAT_completed !== 'true' && order.custom.KAT_shipped !== 'true') {
                 ordersRes.push({
                     order: order
                 });
             }
             Transaction.wrap(function(){               
-                order.custom.KAT_shipped = true;               
+                order.custom.KAT_shipped = 'true';               
             });            
         }
     }
-    
+    var i = 0;
     for (i in ordersRes) {
         try {
             var kat_uid = ordersRes[i].order.custom.KAT_UID;
@@ -63,7 +63,7 @@ function shipping(){
                 items:[],
                 delivery_date: dateDelivered,
             }
-
+            var t = 0;
             for (t in ordersRes[i].order.productLineItems) {              
                     itemsObj.items.push({
                         sku: ordersRes[i].order.productLineItems[t].productID,
@@ -95,7 +95,7 @@ function shipping(){
 function cancel(){
     var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var orders = OrderMgr.searchOrders(
-        "custom.KAT_completed != true AND " + 
+        "custom.KAT_completed != 'true' AND " + 
         "(status = " + ORDER_STATUS_CANCELLED + " OR " + 
         "status = " + ORDER_STATUS_FAILED + ")", " creationDate asc");
     var ordersRes = [];
@@ -103,17 +103,17 @@ function cancel(){
         var order = orders.next();
         var paymentMethod = order.paymentInstrument.paymentMethod;
         if (paymentMethod == "KATAPULT") {
-            if (order.custom.KAT_completed !== true) {
+            if (order.custom.KAT_completed !== 'true') {
                 ordersRes.push({
                     order: order
                 });
                 Transaction.wrap(function(){              
-                    order.custom.KAT_completed = true;               
+                    order.custom.KAT_completed = 'true';               
                 });
             }
         }
     }
-    
+    var i = 0;
     for (i in ordersRes) {
         try {
             var kat_uid = ordersRes[i].order.custom.KAT_UID;
@@ -158,7 +158,7 @@ function cancelItem () {
         while (orders.hasNext()) {
             var order = orders.next();
             var orderNo = order.orderNo;
-
+            var i = 0;
             for (i in order.productLineItems) {
                 var itemsStatus = order.productLineItems[i].externalLineItemStatus;
                 var KAT_cancelItem = order.productLineItems[i].custom.KAT_cancelItem;
