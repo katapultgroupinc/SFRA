@@ -11,8 +11,9 @@ var Transaction = require("dw/system/Transaction");
  * @return {object} JSON object with canceled Items.
  */
 server.get("cancelItem", function (req, res, next) {
-    var orderId = req.querystring.oid;
-  var order = OrderMgr.getOrder(orderId);
+  var orderId = req.querystring.oid;
+  var orderToken = req.querystring.otoken ? req.querystring.otoken : OrderMgr.getOrder(orderId).getOrderToken();
+  var order = OrderMgr.getOrder(orderId, orderToken);
   var lineItem = req.querystring.oli;
 
     for (i in order.productLineItems) {
@@ -25,7 +26,9 @@ server.get("cancelItem", function (req, res, next) {
     }
 
   res.json({
-    return: ["Seu(s) item(ns) na ordem " + orderId + " foram cancelados com sucesso."]
+    success: true,
+    msg: "Update a item custom attribute as a canceled",
+    return: "item(s) at " + orderId + " cancelled."
 });
 
   next();

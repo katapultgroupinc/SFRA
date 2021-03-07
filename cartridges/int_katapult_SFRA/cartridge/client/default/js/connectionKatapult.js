@@ -1,3 +1,6 @@
+ /**
+ * Katapult prepare connection.
+ */
 $(document).ready(function () {
     var katapultApiK = $('#katapultCredentials').data('katapult-apik');
     var katapultEnv = $('#katapultCredentials').data('katapult-env');

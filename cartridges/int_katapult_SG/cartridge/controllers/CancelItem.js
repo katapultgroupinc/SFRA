@@ -10,7 +10,8 @@ var guard = require('*/cartridge/scripts/guard');
  */
 function cancelItem() {
   var orderId = request.httpParameterMap.oid.getStringValue();
-  var order = OrderMgr.getOrder(orderId);
+  var orderToken = request.httpParameterMap.otoken.getStringValue() ? request.httpParameterMap.otoken.getStringValue() : OrderMgr.getOrder(orderId).getOrderToken();
+  var order = OrderMgr.getOrder(orderId, orderToken);
   var lineItem = request.httpParameterMap.oli.getStringValue();
 
     for (i in order.productLineItems) {

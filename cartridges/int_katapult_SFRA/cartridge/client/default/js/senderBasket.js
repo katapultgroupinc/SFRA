@@ -6,7 +6,9 @@
     $('.btn-katapult-preapprove').on('click', function () {
         katapult.preapprove();
     });
-
+/**
+ * Katapult open modal.
+ */
     $('#katapultTrue').add('#checkoutKatapult').on('click', function () {
         var KatapultStart = $('#katapultStart').data('katapult-start');
         var katapultFail = $('#katapultFail').data('katapult-fail');
@@ -70,7 +72,9 @@
             }
         });
     });
-
+ /**
+ * Katapult prepare checkout object.
+ */
     function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {
         var checkout = {
             customer: {

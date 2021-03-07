@@ -7,7 +7,9 @@ module.exports = function () {
     $('.btn-katapult-preapprove').on('click', function () {
         katapult.preapprove();
     });
-
+ /**
+ * Katapult prepare checkout object.
+ */
     function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {
         var checkout = {
             customer: {
@@ -35,7 +37,9 @@ module.exports = function () {
             katapult.checkout.set(checkout);
             katapult.checkout.load();
     }
-
+ /**
+ * Katapult open modal.
+ */
     $('#katapultTrue').on('click', function () {
         var KatapultStart = $('#katapultStart').data('katapult-start');
         var katapultFail = $('#katapultFail').data('katapult-fail');
@@ -100,7 +104,9 @@ module.exports = function () {
             }
         });
     });
-
+/**
+ * Katapult auto open modal.
+ */
 $(document).ready(function () {
     $('.payment-method-options').click(function () {
         var $selectPaymentMethod = $('.payment-method-options');

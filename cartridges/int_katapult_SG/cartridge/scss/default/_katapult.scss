@@ -1,25 +1,30 @@
 .header-banner .header-promotion {
-    background-color: #990000!important;
+  background-color: #900 !important;
 }
+
 .lg-hide {
-    margin-left: 195px;
-    margin-top: -30px;
-    position: absolute;
-    z-index: 2;
+  margin-left: 12.188rem;
+  margin-top: -1.875rem;
+  position: absolute;
+  z-index: 2;
 }
+
 .md-hide {
-    margin:auto;
+  margin: auto;
 }
-@media screen and (max-width: 768px) {
-    .lg-hide {
-        display: none;
-    }
+
+@media screen and (max-width: 48rem) {
+  .lg-hide {
+    display: none;
+  }
 }
-@media screen and (min-width: 768px) {
-    .md-hide {
-        display: none;
-    }
+
+@media screen and (min-width: 48rem) {
+  .md-hide {
+    display: none;
+  }
 }
+
 .header-search {
-    max-width: 260px!important;
+  max-width: 16.25rem !important;
 }

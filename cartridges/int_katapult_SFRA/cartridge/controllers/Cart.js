@@ -2,7 +2,7 @@
     var cart = module.superModule;
     server.extend(cart);
 
-    /**
+/**
  * Katapult get basket to generate checkout to Katapult.
  * @return {object} JSON object.
  */
@@ -21,56 +21,65 @@
         var currentLocale = Locale.getLocale(req.locale.id);
         var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
 
-        var itemsBasket = currentBasket.productLineItems;
-        var itemsCart = [];
-        for (i in itemsBasket) {
-            var isLeasable = itemsBasket[i].product.custom.KAT_isLeasable;
-            if (empty(isLeasable) || isLeasable === false) {
-                isLeasable = false;
+        if (currentBasket) {
+            var itemsBasket = currentBasket.productLineItems;
+            var itemsCart = [];
+            for (i in itemsBasket) {
+                var isLeasable = itemsBasket[i].product.custom.KAT_isLeasable;
+                if (empty(isLeasable) || isLeasable === false) {
+                    isLeasable = false;
+                }
+
+                var price = itemsBasket[i].basePrice.value.toFixed(2);
+
+                itemsCart.push({
+                    display_name: itemsBasket[i].productName,
+                    sku: itemsBasket[i].productID,
+                    unit_price: price,
+                    quantity: itemsBasket[i].quantity.value,
+                    leasable: isLeasable
+                });
+
+                var isEmpty = itemsBasket[i].optionProductLineItems.empty;
+
+                if (isEmpty === false) {
+                    var wPrice = itemsBasket[i].optionProductLineItems[0].basePrice.value.toFixed(2);
+
+                    itemsCart[itemsCart.length - 1].warranty = {
+                        unit_price: wPrice,
+                        display_name: itemsBasket[i].optionProductLineItems[0].productName,
+                        sku: itemsBasket[i].optionProductLineItems[0].UUID
+                    };
+                }
             }
 
-            var price = itemsBasket[i].basePrice.value.toFixed(2);
+            var orderModel = new OrderModel(
+                currentBasket,
+                {
+                    customer: currentCustomer,
+                    usingMultiShipping: usingMultiShipping,
+                    shippable: allValid,
+                    countryCode: currentLocale.country,
+                    containerView: 'basket'
+                }
+            );
 
-            itemsCart.push({
-                display_name: itemsBasket[i].productName,
-                sku: itemsBasket[i].productID,
-                unit_price: price,
-                quantity: itemsBasket[i].quantity.value,
-                leasable: isLeasable
+            res.json({
+                success: true,
+                basketModel: basketModel,
+                basketId: basketId,
+                order: orderModel,
+                itemsCart: itemsCart,
+                redirectUrlFail: URLUtils.url('Cart-Show').toString(),
+                msg: "The basket was found"
             });
-
-            var isEmpty = itemsBasket[i].optionProductLineItems.empty;
-
-            if (isEmpty === false) {
-                var wPrice = itemsBasket[i].optionProductLineItems[0].basePrice.value.toFixed(2);
-
-                itemsCart[itemsCart.length - 1].warranty = {
-                    unit_price: wPrice,
-                    display_name: itemsBasket[i].optionProductLineItems[0].productName,
-                    sku: itemsBasket[i].optionProductLineItems[0].UUID
-                };
-            }
+        } else {
+            res.json({
+                success: true,
+                msg: "No current basket was found."
+            });
         }
 
-        var orderModel = new OrderModel(
-            currentBasket,
-            {
-                customer: currentCustomer,
-                usingMultiShipping: usingMultiShipping,
-                shippable: allValid,
-                countryCode: currentLocale.country,
-                containerView: 'basket'
-            }
-        );
-
-        res.json({
-            success: true,
-            basketModel: basketModel,
-            basketId: basketId,
-            order: orderModel,
-            itemsCart: itemsCart,
-            redirectUrlFail: URLUtils.url('Cart-Show').toString()
-        });
         next();
     });
     module.exports = server.exports();

@@ -222,7 +222,7 @@
 				<fieldset>
 					<div class="form-row">
 						<a class="back-to-cart" href="${URLUtils.url('Cart-Show')}">
-							<isprint value="${Resource.msg('summary.editcart','checkout',null)}" encoding="off" />
+							<isprint value="${Resource.msg('summary.editcart','checkout',null)}"  />
 						</a>
 						<isif condition="${pdict.Basket.paymentInstrument.paymentMethod === "KATAPULT"}"> 
 							<button id="katapultTrue" class="btn-katapult-checkout float-right" style="" type="button"></button>

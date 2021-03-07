@@ -5,7 +5,11 @@ var PromotionMgr = require('dw/campaign/PromotionMgr');
 var collections = require('*/cartridge/scripts/util/collections');
 
 var promotionCache = Object.create(null);
-
+/**
+ * Katapult Promotions cash.
+ * @param promotionCache - Promotion.
+ * @return {object} -collections promoIds.
+ */
 Object.defineProperty(promotionCache, 'promotions', {
     get: function () {
         if (session.privacy.promoCache) {

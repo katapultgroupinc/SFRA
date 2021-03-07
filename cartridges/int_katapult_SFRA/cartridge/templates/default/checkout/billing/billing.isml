@@ -112,7 +112,6 @@
                 <isinclude template="checkout/billing/paymentOptions" />
             </fieldset>
             
-
         </form>
     </div>
 </div>

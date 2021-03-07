@@ -70,8 +70,10 @@ server.prepend(
                 return;
             }
 
-            if (session.custom.hasKatapult !== "yes") {
-                isKatapult ? session.custom.hasKatapult = 'yes' : session.custom.hasKatapult = '';
+            hasKatapult = req.session.privacyCache.get('hasKatapult');
+
+            if (hasKatapult !== "yes") {
+                isKatapult ? req.session.privacyCache.set('hasKatapult', "yes") : req.session.privacyCache.set('hasKatapult', "");
                 // verify billing form data
                 var billingFormErrors = COHelpers.validateBillingForm(paymentForm.addressFields);
                 var contactInfoFormErrors = COHelpers.validateFields(paymentForm.contactInfoFields);
@@ -109,7 +111,7 @@ server.prepend(
 
                 var paymentProcessor = PaymentManager.getPaymentMethod(paymentMethodIdValue).getPaymentProcessor();
                 if (!paymentProcessor) {
-                    session.custom.hasKatapult = "";
+                    req.session.privacyCache.set('hasKatapult', "");
                     throw new Error(Resource.msg(
                         'error.payment.processor.missing',
                         'checkout',
@@ -133,7 +135,7 @@ server.prepend(
 
                 if (formFieldErrors.length || paymentFormResult.serverErrors) {
                     // respond with form data and errors
-                    session.custom.hasKatapult = "";
+                    req.session.privacyCache.set('hasKatapult', "");
                     res.json({
                         form: paymentForm,
                         fieldErrors: formFieldErrors,
@@ -170,7 +172,7 @@ server.prepend(
 
                     if (!currentBasket) {
                         delete billingData.paymentInformation;
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         res.json({
                             error: true,
                             cartError: true,
@@ -184,7 +186,7 @@ server.prepend(
                     var validatedProducts = validationHelpers.validateProducts(currentBasket);
                     if (validatedProducts.error) {
                         delete billingData.paymentInformation;
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         res.json({
                             error: true,
                             cartError: true,
@@ -234,7 +236,7 @@ server.prepend(
                     // if there is no selected payment option and balance is greater than zero
                     if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
                         var noPaymentMethod = {};
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'payment', null);
 
                         delete billingData.paymentInformation;
@@ -250,7 +252,7 @@ server.prepend(
 
                     // check to make sure there is a payment processor
                     if (!PaymentMgr.getPaymentMethod(paymentMethodID).paymentProcessor) {
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         throw new Error(Resource.msg(
                             'error.payment.processor.missing',
                             'checkout',
@@ -271,7 +273,7 @@ server.prepend(
 
                     if (result.error) {
                         delete billingData.paymentInformation;
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         res.json({
                             form: billingForm,
                             fieldErrors: result.fieldErrors,
@@ -302,7 +304,7 @@ server.prepend(
                     );
 
                     if (calculatedPaymentTransaction.error) {
-                        session.custom.hasKatapult = "";
+                        req.session.privacyCache.set('hasKatapult', "");
                         res.json({
                             form: paymentForm,
                             fieldErrors: [],
@@ -575,7 +577,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
 
     // Reset usingMultiShip after successful Order placement
     req.session.privacyCache.set('usingMultiShipping', false);
-    session.custom.hasKatapult = "";
+    req.session.privacyCache.set('hasKatapult', "");
     res.redirect(URLUtils.url('Order-Confirm', 'ID', order.orderNo, 'token', order.orderToken).toString());
 
     return next();

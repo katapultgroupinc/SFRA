@@ -1,3 +1,6 @@
+ /**
+ * Katapult open modal.
+ */
 module.exports = function () {
     $(document).ready(function () {
         $('button[name ="dwfrm_billing_save"]').click(function (e) {
