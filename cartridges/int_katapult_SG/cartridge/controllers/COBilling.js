@@ -1,3 +1,8 @@
+'use strict';
+
+/*
+eslint no-undef: "off"
+*/
 /**
  * Controller for the billing logic. It is used by both the single shipping and the multishipping
  * functionality and is responsible for payment method selection and entering a billing address.
@@ -28,6 +33,7 @@ var guard = require('*/cartridge/scripts/guard');
  * address" option on the single shipping page the form is prepopulated with the shipping
  * address, otherwise it prepopulates with the billing address that was already set.
  * If neither address is available, it prepopulates with the default address of the authenticated customer.
+ * @param {Object} cart user cart.
  */
 function initAddressForm(cart) {
     if (app.getForm('singleshipping').object.shippingAddress.useAsBillingAddress.value === true) {
@@ -55,6 +61,7 @@ function initAddressForm(cart) {
  * email set at the basket, that email address is used. If the
  * current customer is authenticated the email address of the customer's profile
  * is used.
+ * @param {Object} cart user cart.
  */
 function initEmailAddress(cart) {
     if (cart.getCustomerEmail() !== null) {
@@ -70,7 +77,7 @@ function initEmailAddress(cart) {
  * Updates the page metadata. Gets a view and adds any passed parameters to it. Sets the Basket and ContinueURL properties.
  * Renders the checkout/billing/billing template.
  * @param {module:models/CartModel~CartModel} cart - A CartModel wrapping the current Basket.
- * @param {object} params - (optional) if passed, added to view properties so they can be accessed in the template.
+ * @param {Object} params - (optional) if passed, added to view properties so they can be accessed in the template.
  */
 function returnToForm(cart, params) {
     var pageMeta = require('*/cartridge/scripts/meta');
@@ -103,7 +110,7 @@ function returnToForm(cart, params) {
  * Updates cart calculation and page information and renders the billing page.
  * @transactional
  * @param {module:models/CartModel~CartModel} cart - A CartModel wrapping the current Basket.
- * @param {object} params - (optional) if passed, added to view properties so they can be accessed in the template.
+ * @param {Object} params - (optional) if passed, added to view properties so they can be accessed in the template.
  */
 function start(cart, params) {
     app.getController('COShipping').PrepareShipments();
@@ -122,7 +129,7 @@ function start(cart, params) {
 /**
  * Initializes the credit card list by determining the saved customer payment methods for the current locale.
  * @param {module:models/CartModel~CartModel} cart - A CartModel wrapping the current Basket.
- * @return {object} JSON object with members ApplicablePaymentMethods and ApplicableCreditCards.
+ * @return {Object} JSON object with members ApplicablePaymentMethods and ApplicableCreditCards.
  */
 function initCreditCardList(cart) {
     var paymentAmount = cart.getNonGiftCertificateAmount();
@@ -193,12 +200,12 @@ function publicStart() {
  * Removes and then adds currently added gift certificates to reflect order total changes.
  */
 function adjustGiftCertificates() {
-    var i,
-j,
-cart,
-gcIdList,
-gcID,
-gc;
+    var i;
+    var j;
+    var cart;
+    var gcIdList;
+    var gcID;
+    var gc;
     cart = app.getModel('Cart').get();
 
     if (cart) {
@@ -256,16 +263,16 @@ function handleCoupon() {
  * redeemed, the form field is invalidated with the appropriate error message.
  * If the gift certificate was redeemed, the form gets cleared. This function
  * is called by an Ajax request and generates a JSON response.
- * @param {String} giftCertCode - Gift certificate code entered into the giftCertCode field in the billing form.
- * @returns {object} JSON object containing the status of the gift certificate.
+ * @param {string} giftCertCode - Gift certificate code entered into the giftCertCode field in the billing form.
+ * @returns {Object} JSON object containing the status of the gift certificate.
  */
 function redeemGiftCertificate(giftCertCode) {
-    var cart,
-gc,
-newGCPaymentInstrument,
-gcPaymentInstrument,
-status,
-result;
+    var cart;
+    var gc;
+    var newGCPaymentInstrument;
+    var gcPaymentInstrument;
+    var status;
+    var result;
     cart = app.getModel('Cart').get();
 
     if (cart) {
@@ -305,12 +312,12 @@ result;
  * In either case, it will initialize the credit card list in the billing form and call the {@link module:controllers/COBilling~start|start} function.
  */
 function updateCreditCardSelection() {
-    var cart,
-applicableCreditCards,
-UUID,
-selectedCreditCard,
-instrumentsIter,
-creditCardInstrument;
+    var cart;
+    var applicableCreditCards;
+    var UUID;
+    var selectedCreditCard;
+    var instrumentsIter;
+    var creditCardInstrument;
     cart = app.getModel('Cart').get();
 
     applicableCreditCards = initCreditCardList(cart).ApplicableCreditCards;
@@ -346,7 +353,7 @@ creditCardInstrument;
 /**
  * Clears the form element for the currently selected payment method and removes the other payment methods.
  *
- * @return {Boolean} Returns true if payment is successfully reset. Returns false if the currently selected payment
+ * @return {boolean} Returns true if payment is successfully reset. Returns false if the currently selected payment
  * method is bml and the ssn cannot be validated.
  */
 function resetPaymentForms() {
@@ -416,9 +423,10 @@ function validateBilling() {
  * validation and verification on the entered form fields. If the
  * order total is 0 (if the user has product promotions) then we do not
  * need a valid payment method.
+ * @param {Object} cart user cart.
+ * @returns {Object} selectedPaymentMethodID.
  */
 function handlePaymentSelection(cart) {
-    var a = "test";
     var result;
     if (empty(app.getForm('billing').object.paymentMethods.selectedPaymentMethodID.value)) {
         if (cart.getTotalGrossPrice() > 0) {
@@ -480,9 +488,9 @@ function handleBillingAddress(cart) {
  * If a cart does not already exist, calls the {@link module:controllers/Cart~Show|Cart controller Show function}.
  */
 function updateAddressDetails() {
-    var cart,
-address,
-billingAddress;
+    var cart;
+    var address;
+    var billingAddress;
     cart = app.getModel('Cart').get();
 
     if (cart) {
@@ -573,13 +581,13 @@ function billing() {
 * Otherwise, renders a JSON object with information about the gift certificate code and the success and status of the redemption.
 */
 function redeemGiftCertificateJson() {
-    var giftCertCode,
-giftCertStatus;
+    var giftCertCode;
+    var giftCertStatus;
 
     giftCertCode = request.httpParameterMap.giftCertCode.stringValue;
     giftCertStatus = redeemGiftCertificate(giftCertCode);
 
-    let responseUtils = require('*/cartridge/scripts/util/Response');
+    var responseUtils = require('*/cartridge/scripts/util/Response');
 
     if (request.httpParameterMap.format.stringValue !== 'ajax') {
         // @FIXME we could also build an ajax guard?
@@ -711,11 +719,11 @@ function getGiftCertificateBalance() {
  * credit card.
  */
 function selectCreditCard() {
-    var cart,
-applicableCreditCards,
-selectedCreditCard,
-instrumentsIter,
-creditCardInstrument;
+    var cart;
+    var applicableCreditCards;
+    var selectedCreditCard;
+    var instrumentsIter;
+    var creditCardInstrument;
     cart = app.getModel('Cart').get();
 
     applicableCreditCards = initCreditCardList(cart).ApplicableCreditCards;
@@ -747,13 +755,13 @@ creditCardInstrument;
  * Revalidates existing payment instruments in later checkout steps.
  *
  * @param {module:models/CartModel~CartModel} cart - A CartModel wrapping the current Basket.
- * @return {Boolean} true if existing payment instruments are valid, false if not.
+ * @return {boolean} true if existing payment instruments are valid, false if not.
  */
 function validatePayment(cart) {
-    var paymentAmount,
-countryCode,
-invalidPaymentInstruments,
-result;
+    var paymentAmount;
+    var countryCode;
+    var invalidPaymentInstruments;
+    var result;
     if (app.getForm('billing').object.fulfilled.value) {
         paymentAmount = cart.getNonGiftCertificateAmount();
         countryCode = Countries.getCurrent({
@@ -782,12 +790,12 @@ result;
  * number of the same card type with the new credit card. This ensures creating
  * only unique cards as well as replacing expired cards.
  * @transactional
- * @return {Boolean} true if credit card is successfully saved.
+ * @return {boolean} true if credit card is successfully saved.
  */
 function saveCreditCard() {
-    var i,
-creditCards,
-newCreditCard;
+    var i;
+    var creditCards;
+    var newCreditCard;
 
     if (customer.authenticated && app.getForm('billing').object.paymentMethods.creditCard.saveCard.value) {
         creditCards = customer.getProfile().getWallet().getPaymentInstruments(PaymentInstrument.METHOD_CREDIT_CARD);
@@ -802,7 +810,7 @@ newCreditCard;
             newCreditCard.setCreditCardExpirationYear(app.getForm('billing').object.paymentMethods.creditCard.expiration.year.value);
             newCreditCard.setCreditCardType(app.getForm('billing').object.paymentMethods.creditCard.type.value);
 
-            for (i = 0; i < creditCards.length; i++) {
+            for (i = 0; i < creditCards.length; i += 1) {
                 var creditcard = creditCards[i];
 
                 if (creditcard.maskedCreditCardNumber === newCreditCard.maskedCreditCardNumber && creditcard.creditCardType === newCreditCard.creditCardType) {

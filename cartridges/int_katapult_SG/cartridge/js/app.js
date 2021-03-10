@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *    (c) 2009-2014 Demandware Inc.
  *    Subject to standard usage terms and conditions

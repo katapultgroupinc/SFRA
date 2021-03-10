@@ -1,9 +1,11 @@
-var server = require("server");
+'use strict';
+
+var server = require('server');
 
 /**
  * Checkout begin redirect.
  */
-server.get("redirect", function (req, res, next) {
+server.get('redirect', function (req, res, next) {
     var URLUtils = require('dw/web/URLUtils');
     var urlCancel = decodeURIComponent(URLUtils.url('Checkout-Begin?stage=payment#payment'));
 

@@ -1,15 +1,24 @@
+'use strict';
+
+/*
+eslint no-undef: "off"
+*/
 var server = require('server');
 var checkoutService = module.superModule;
-    server.extend(checkoutService);
+server.extend(checkoutService);
 var URLUtils = require('dw/web/URLUtils');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var Transaction = require('dw/system/Transaction');
 
+/**
+*  sleep to wait SF internal process
+* @param {num} milliseconds time to sleep.
+*/
 function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
+    var date = Date.now();
+    var currentDate = null;
     do {
-      currentDate = Date.now();
+        currentDate = Date.now();
     } while (currentDate - date < milliseconds);
 }
 
@@ -20,40 +29,40 @@ server.prepend(
     'SubmitPayment',
     server.middleware.https,
     function (req, res, next) {
-        res.setHttpHeader("Access-Control-Allow-Origin", req.httpHeaders.origin);
-        if (req.body && req.httpMethod === "POST") {
+        res.setHttpHeader('Access-Control-Allow-Origin', req.httpHeaders.origin);
+        if (req.body && req.httpMethod === 'POST') {
             var bodyObject = JSON.parse(req.body);
             // If it comes from katapult
             if (bodyObject.zibby_id) {
                 var basket = req.querystring.basket.toString();
                 var isRecordExist = CustomObjectMgr.getCustomObject(
-                    "katapult_transactions",
+                    'katapult_transactions',
                     basket
                 );
                 if (!isRecordExist) {
                     Transaction.begin();
-                        var transaction = CustomObjectMgr.createCustomObject(
-                        "katapult_transactions",
+                    var transaction = CustomObjectMgr.createCustomObject(
+                        'katapult_transactions',
                         basket
-                        );
-                        transaction.custom.KAT_customer_id = bodyObject.customer_id;
-                        transaction.custom.KAT_zibby_id = bodyObject.zibby_id;
-                        transaction.custom.KAT_uid = bodyObject.uid;
+                    );
+                    transaction.custom.KAT_customer_id = bodyObject.customer_id;
+                    transaction.custom.KAT_zibby_id = bodyObject.zibby_id;
+                    transaction.custom.KAT_uid = bodyObject.uid;
                     Transaction.commit();
                 } else {
                     Transaction.begin();
-                        isRecordExist.custom.KAT_customer_id = bodyObject.customer_id;
-                        isRecordExist.custom.KAT_zibby_id = bodyObject.zibby_id;
-                        isRecordExist.custom.KAT_uid = bodyObject.uid;
+                    isRecordExist.custom.KAT_customer_id = bodyObject.customer_id;
+                    isRecordExist.custom.KAT_zibby_id = bodyObject.zibby_id;
+                    isRecordExist.custom.KAT_uid = bodyObject.uid;
                     Transaction.commit();
                 }
 
-                res.json({ message: "OK" });
-                this.emit("route:Complete", req, res);
+                res.json({ message: 'OK' });
+                this.emit('route:Complete', req, res);
             } else { // else go to the next controller
-              next();
+                next();
             }
-        } else if (req.httpHeaders.origin !== "https://sandbox.katapult.com") {
+        } else if (req.httpHeaders.origin !== 'https://sandbox.katapult.com') {
             var PaymentManager = require('dw/order/PaymentMgr');
             var HookManager = require('dw/system/HookMgr');
             var Resource = require('dw/web/Resource');
@@ -63,7 +72,7 @@ server.prepend(
             var paymentForm = server.forms.getForm('billing');
             var paymentMethodIdValue = paymentForm.paymentMethod.value;
 
-            isKatapult = paymentMethodIdValue === 'KATAPULT' ? true : false;
+            isKatapult = paymentMethodIdValue === 'KATAPULT';
 
             if (!isKatapult) {
                 next();
@@ -72,8 +81,12 @@ server.prepend(
 
             hasKatapult = req.session.privacyCache.get('hasKatapult');
 
-            if (hasKatapult !== "yes") {
-                isKatapult ? req.session.privacyCache.set('hasKatapult', "yes") : req.session.privacyCache.set('hasKatapult', "");
+            if (hasKatapult !== 'yes') {
+                if (isKatapult) {
+                    req.session.privacyCache.set('hasKatapult', 'yes');
+                } else {
+                    req.session.privacyCache.set('hasKatapult', '');
+                }
                 // verify billing form data
                 var billingFormErrors = COHelpers.validateBillingForm(paymentForm.addressFields);
                 var contactInfoFormErrors = COHelpers.validateFields(paymentForm.contactInfoFields);
@@ -111,7 +124,7 @@ server.prepend(
 
                 var paymentProcessor = PaymentManager.getPaymentMethod(paymentMethodIdValue).getPaymentProcessor();
                 if (!paymentProcessor) {
-                    req.session.privacyCache.set('hasKatapult', "");
+                    req.session.privacyCache.set('hasKatapult', '');
                     throw new Error(Resource.msg(
                         'error.payment.processor.missing',
                         'checkout',
@@ -135,7 +148,7 @@ server.prepend(
 
                 if (formFieldErrors.length || paymentFormResult.serverErrors) {
                     // respond with form data and errors
-                    req.session.privacyCache.set('hasKatapult', "");
+                    req.session.privacyCache.set('hasKatapult', '');
                     res.json({
                         form: paymentForm,
                         fieldErrors: formFieldErrors,
@@ -146,204 +159,204 @@ server.prepend(
                     return;
                 }
 
-                    var BasketMgr = require('dw/order/BasketMgr');
-                    var HookMgr = require('dw/system/HookMgr');
-                    var PaymentMgr = require('dw/order/PaymentMgr');
-                    var PaymentInstrument = require('dw/order/PaymentInstrument');
-                    var AccountModel = require('*/cartridge/models/account');
-                    var OrderModel = require('*/cartridge/models/order');
-                    var Locale = require('dw/util/Locale');
-                    var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
-                    var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
-                    var validationHelpers = require('*/cartridge/scripts/helpers/basketValidationHelpers');
-                    var currentBasket = BasketMgr.getCurrentBasket();
-                    var billingData = paymentFormResult.viewData;
+                var BasketMgr = require('dw/order/BasketMgr');
+                var HookMgr = require('dw/system/HookMgr');
+                var PaymentMgr = require('dw/order/PaymentMgr');
+                // var PaymentInstrument = require('dw/order/PaymentInstrument');
+                var AccountModel = require('*/cartridge/models/account');
+                var OrderModel = require('*/cartridge/models/order');
+                var Locale = require('dw/util/Locale');
+                var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+                var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
+                var validationHelpers = require('*/cartridge/scripts/helpers/basketValidationHelpers');
+                var currentBasket = BasketMgr.getCurrentBasket();
+                var billingData = paymentFormResult.viewData;
 
-                    // Removes all previous payment methods before creating new one
-                    var paymentInstruments = currentBasket.getPaymentInstruments();
-                    var iterator = paymentInstruments.iterator();
-                    var paymentInstrument = null;
-                    Transaction.wrap(function () {
-                        while (iterator.hasNext()) {
-                            paymentInstrument = iterator.next();
-                            currentBasket.removePaymentInstrument(paymentInstrument);
-                        }
+                // Removes all previous payment methods before creating new one
+                var paymentInstruments = currentBasket.getPaymentInstruments();
+                var iterator = paymentInstruments.iterator();
+                var paymentInstrument = null;
+                Transaction.wrap(function () {
+                    while (iterator.hasNext()) {
+                        paymentInstrument = iterator.next();
+                        currentBasket.removePaymentInstrument(paymentInstrument);
+                    }
+                });
+
+                if (!currentBasket) {
+                    delete billingData.paymentInformation;
+                    req.session.privacyCache.set('hasKatapult', '');
+                    res.json({
+                        error: true,
+                        cartError: true,
+                        fieldErrors: [],
+                        serverErrors: [],
+                        redirectUrl: URLUtils.url('Cart-Show').toString()
                     });
+                    return;
+                }
 
-                    if (!currentBasket) {
-                        delete billingData.paymentInformation;
-                        req.session.privacyCache.set('hasKatapult', "");
-                        res.json({
-                            error: true,
-                            cartError: true,
-                            fieldErrors: [],
-                            serverErrors: [],
-                            redirectUrl: URLUtils.url('Cart-Show').toString()
-                        });
-                        return;
-                    }
-
-                    var validatedProducts = validationHelpers.validateProducts(currentBasket);
-                    if (validatedProducts.error) {
-                        delete billingData.paymentInformation;
-                        req.session.privacyCache.set('hasKatapult', "");
-                        res.json({
-                            error: true,
-                            cartError: true,
-                            fieldErrors: [],
-                            serverErrors: [],
-                            redirectUrl: URLUtils.url('Cart-Show').toString()
-                        });
-                        return;
-                    }
-
-                    var billingAddress = currentBasket.billingAddress;
-                    var billingForm = server.forms.getForm('billing');
-                    var paymentMethodID = billingData.paymentMethod.value;
-                    var result;
-
-                    Transaction.wrap(function () {
-                        if (!billingAddress) {
-                            billingAddress = currentBasket.createBillingAddress();
-                        }
-
-                        billingAddress.setFirstName(billingData.address.firstName.value);
-                        billingAddress.setLastName(billingData.address.lastName.value);
-                        billingAddress.setAddress1(billingData.address.address1.value);
-                        billingAddress.setAddress2(billingData.address.address2.value);
-                        billingAddress.setCity(billingData.address.city.value);
-                        billingAddress.setPostalCode(billingData.address.postalCode.value);
-                        if (Object.prototype.hasOwnProperty.call(billingData.address, 'stateCode')) {
-                            billingAddress.setStateCode(billingData.address.stateCode.value);
-                        }
-                        billingAddress.setCountryCode(billingData.address.countryCode.value);
-
-                        if (billingData.storedPaymentUUID) {
-                            billingAddress.setPhone(req.currentCustomer.profile.phone);
-                            currentBasket.setCustomerEmail(req.currentCustomer.profile.email);
-                        } else {
-                            billingAddress.setPhone(billingData.phone.value);
-                            currentBasket.setCustomerEmail(billingData.email.value);
-                        }
-
-                        var paymentInstrument = currentBasket.createPaymentInstrument(
-                            paymentMethodIdValue, currentBasket.totalGrossPrice
-                        );
-                        // paymentInstrument.custom.adyenPaymentMethod = paymentMethodIdValue;
-                        paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
+                var validatedProducts = validationHelpers.validateProducts(currentBasket);
+                if (validatedProducts.error) {
+                    delete billingData.paymentInformation;
+                    req.session.privacyCache.set('hasKatapult', '');
+                    res.json({
+                        error: true,
+                        cartError: true,
+                        fieldErrors: [],
+                        serverErrors: [],
+                        redirectUrl: URLUtils.url('Cart-Show').toString()
                     });
+                    return;
+                }
 
-                    // if there is no selected payment option and balance is greater than zero
-                    if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
-                        var noPaymentMethod = {};
-                        req.session.privacyCache.set('hasKatapult', "");
-                        noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'payment', null);
+                var billingAddress = currentBasket.billingAddress;
+                var billingForm = server.forms.getForm('billing');
+                var paymentMethodID = billingData.paymentMethod.value;
+                var result;
 
-                        delete billingData.paymentInformation;
-
-                        res.json({
-                            form: billingForm,
-                            fieldErrors: [noPaymentMethod],
-                            serverErrors: [],
-                            error: true
-                        });
-                        return;
+                Transaction.wrap(function () {
+                    if (!billingAddress) {
+                        billingAddress = currentBasket.createBillingAddress();
                     }
 
-                    // check to make sure there is a payment processor
-                    if (!PaymentMgr.getPaymentMethod(paymentMethodID).paymentProcessor) {
-                        req.session.privacyCache.set('hasKatapult', "");
-                        throw new Error(Resource.msg(
-                            'error.payment.processor.missing',
-                            'checkout',
-                            null
-                        ));
+                    billingAddress.setFirstName(billingData.address.firstName.value);
+                    billingAddress.setLastName(billingData.address.lastName.value);
+                    billingAddress.setAddress1(billingData.address.address1.value);
+                    billingAddress.setAddress2(billingData.address.address2.value);
+                    billingAddress.setCity(billingData.address.city.value);
+                    billingAddress.setPostalCode(billingData.address.postalCode.value);
+                    if (Object.prototype.hasOwnProperty.call(billingData.address, 'stateCode')) {
+                        billingAddress.setStateCode(billingData.address.stateCode.value);
                     }
+                    billingAddress.setCountryCode(billingData.address.countryCode.value);
 
-                    var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
-
-                    if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
-                        result = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
-                            'Handle',
-                            currentBasket,
-                            billingData.paymentInformation);
+                    if (billingData.storedPaymentUUID) {
+                        billingAddress.setPhone(req.currentCustomer.profile.phone);
+                        currentBasket.setCustomerEmail(req.currentCustomer.profile.email);
                     } else {
-                        result = HookMgr.callHook('app.payment.processor.default', 'Handle');
+                        billingAddress.setPhone(billingData.phone.value);
+                        currentBasket.setCustomerEmail(billingData.email.value);
                     }
 
-                    if (result.error) {
-                        delete billingData.paymentInformation;
-                        req.session.privacyCache.set('hasKatapult', "");
-                        res.json({
-                            form: billingForm,
-                            fieldErrors: result.fieldErrors,
-                            serverErrors: result.serverErrors,
-                            error: true
-                        });
-                        return;
-                    }
-
-                    if (HookMgr.hasHook('app.payment.form.processor.' + processor.ID.toLowerCase())) {
-                        HookMgr.callHook('app.payment.form.processor.' + processor.ID.toLowerCase(),
-                            'savePaymentInformation',
-                            req,
-                            currentBasket,
-                            billingData);
-                    } else {
-                        HookMgr.callHook('app.payment.form.processor.default', 'savePaymentInformation');
-                    }
-
-                    // Calculate the basket
-                    Transaction.wrap(function () {
-                        basketCalculationHelpers.calculateTotals(currentBasket);
-                    });
-
-                    // Re-calculate the payments.
-                    var calculatedPaymentTransaction = COHelpers.calculatePaymentTransaction(
-                        currentBasket
+                    paymentInstrument = currentBasket.createPaymentInstrument(
+                        paymentMethodIdValue, currentBasket.totalGrossPrice
                     );
+                    // paymentInstrument.custom.adyenPaymentMethod = paymentMethodIdValue;
+                    paymentInstrument.paymentTransaction.paymentProcessor = paymentProcessor;
+                });
 
-                    if (calculatedPaymentTransaction.error) {
-                        req.session.privacyCache.set('hasKatapult', "");
-                        res.json({
-                            form: paymentForm,
-                            fieldErrors: [],
-                            serverErrors: [Resource.msg('error.technical', 'checkout', null)],
-                            error: true
-                        });
-                        return;
-                    }
-
-                    var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
-                    if (usingMultiShipping === true && currentBasket.shipments.length < 2) {
-                        req.session.privacyCache.set('usingMultiShipping', false);
-                        usingMultiShipping = false;
-                    }
-
-                    hooksHelper('app.customer.subscription', 'subscribeTo', [paymentForm.subscribe.checked, paymentForm.contactInfoFields.email.htmlValue], function () {});
-
-                    var currentLocale = Locale.getLocale(req.locale.id);
-
-                    var basketModel = new OrderModel(
-                        currentBasket,
-                        { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country, containerView: 'basket' }
-                    );
-
-                    var accountModel = new AccountModel(req.currentCustomer);
-                    var renderedStoredPaymentInstrument = COHelpers.getRenderedPaymentInstruments(
-                        req,
-                        accountModel
-                    );
+                // if there is no selected payment option and balance is greater than zero
+                if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
+                    var noPaymentMethod = {};
+                    req.session.privacyCache.set('hasKatapult', '');
+                    noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'payment', null);
 
                     delete billingData.paymentInformation;
 
                     res.json({
-                        renderedPaymentInstruments: renderedStoredPaymentInstrument,
-                        customer: accountModel,
-                        order: basketModel,
                         form: billingForm,
-                        error: false
+                        fieldErrors: [noPaymentMethod],
+                        serverErrors: [],
+                        error: true
                     });
+                    return;
+                }
+
+                // check to make sure there is a payment processor
+                if (!PaymentMgr.getPaymentMethod(paymentMethodID).paymentProcessor) {
+                    req.session.privacyCache.set('hasKatapult', '');
+                    throw new Error(Resource.msg(
+                        'error.payment.processor.missing',
+                        'checkout',
+                        null
+                    ));
+                }
+
+                var processor = PaymentMgr.getPaymentMethod(paymentMethodID).getPaymentProcessor();
+
+                if (HookMgr.hasHook('app.payment.processor.' + processor.ID.toLowerCase())) {
+                    result = HookMgr.callHook('app.payment.processor.' + processor.ID.toLowerCase(),
+                        'Handle',
+                        currentBasket,
+                        billingData.paymentInformation);
+                } else {
+                    result = HookMgr.callHook('app.payment.processor.default', 'Handle');
+                }
+
+                if (result.error) {
+                    delete billingData.paymentInformation;
+                    req.session.privacyCache.set('hasKatapult', '');
+                    res.json({
+                        form: billingForm,
+                        fieldErrors: result.fieldErrors,
+                        serverErrors: result.serverErrors,
+                        error: true
+                    });
+                    return;
+                }
+
+                if (HookMgr.hasHook('app.payment.form.processor.' + processor.ID.toLowerCase())) {
+                    HookMgr.callHook('app.payment.form.processor.' + processor.ID.toLowerCase(),
+                        'savePaymentInformation',
+                        req,
+                        currentBasket,
+                        billingData);
+                } else {
+                    HookMgr.callHook('app.payment.form.processor.default', 'savePaymentInformation');
+                }
+
+                // Calculate the basket
+                Transaction.wrap(function () {
+                    basketCalculationHelpers.calculateTotals(currentBasket);
+                });
+
+                // Re-calculate the payments.
+                var calculatedPaymentTransaction = COHelpers.calculatePaymentTransaction(
+                    currentBasket
+                );
+
+                if (calculatedPaymentTransaction.error) {
+                    req.session.privacyCache.set('hasKatapult', '');
+                    res.json({
+                        form: paymentForm,
+                        fieldErrors: [],
+                        serverErrors: [Resource.msg('error.technical', 'checkout', null)],
+                        error: true
+                    });
+                    return;
+                }
+
+                var usingMultiShipping = req.session.privacyCache.get('usingMultiShipping');
+                if (usingMultiShipping === true && currentBasket.shipments.length < 2) {
+                    req.session.privacyCache.set('usingMultiShipping', false);
+                    usingMultiShipping = false;
+                }
+
+                hooksHelper('app.customer.subscription', 'subscribeTo', [paymentForm.subscribe.checked, paymentForm.contactInfoFields.email.htmlValue], function () {});
+
+                var currentLocale = Locale.getLocale(req.locale.id);
+
+                var basketModel = new OrderModel(
+                    currentBasket,
+                    { usingMultiShipping: usingMultiShipping, countryCode: currentLocale.country, containerView: 'basket' }
+                );
+
+                var accountModel = new AccountModel(req.currentCustomer);
+                var renderedStoredPaymentInstrument = COHelpers.getRenderedPaymentInstruments(
+                    req,
+                    accountModel
+                );
+
+                delete billingData.paymentInformation;
+
+                res.json({
+                    renderedPaymentInstruments: renderedStoredPaymentInstrument,
+                    customer: accountModel,
+                    order: basketModel,
+                    form: billingForm,
+                    error: false
+                });
 
                 this.emit('route:Complete', req, res);
             } else {
@@ -352,9 +365,9 @@ server.prepend(
                 this.emit('route:Complete', req, res);
             }
         } else {
-                res.json({
-                    message: "OK"
-                });
+            res.json({
+                message: 'OK'
+            });
 
             this.emit('route:Complete', req, res);
         }
@@ -368,8 +381,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
     var OrderMgr = require('dw/order/OrderMgr');
-    var Transaction = require('dw/system/Transaction');
-    var URLUtils = require('dw/web/URLUtils');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
     var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
     var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
@@ -393,7 +404,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     var isRecordExist = CustomObjectMgr.getCustomObject('katapult_transactions', basketID);
 
     var paymentForm = server.forms.getForm('billing');
-    isKat = (paymentForm.paymentMethod.value === 'KATAPULT') ? true : false;
+    isKat = (paymentForm.paymentMethod.value === 'KATAPULT');
 
     if (!isKat) {
         if (isRecordExist) {
@@ -508,14 +519,15 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
             order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_PAID);
             var paymentInstruments = order.getPaymentInstruments('KATAPULT');
             if (paymentInstruments) {
-                for (paymentInstrument in paymentInstruments) {
-                    if (paymentInstrument.paymentMethod === "KATAPULT") {
+                for (var i = 0; i < paymentInstruments; i += 1) {
+                    paymentInstrument = paymentInstruments[i];
+                    if (paymentInstrument.paymentMethod === 'KATAPULT') {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
                     }
                 }
             }
             CustomObjectMgr.remove(isRecordExist);
-         });
+        });
     }
 
     // Handles payment authorization
@@ -577,7 +589,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
 
     // Reset usingMultiShip after successful Order placement
     req.session.privacyCache.set('usingMultiShipping', false);
-    req.session.privacyCache.set('hasKatapult', "");
+    req.session.privacyCache.set('hasKatapult', '');
     res.redirect(URLUtils.url('Order-Confirm', 'ID', order.orderNo, 'token', order.orderToken).toString());
 
     return next();

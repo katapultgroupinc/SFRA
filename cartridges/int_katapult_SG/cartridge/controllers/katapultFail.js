@@ -1,3 +1,8 @@
+'use strict';
+
+/*
+eslint no-undef: "off"
+*/
 /* Script Modules */
 var guard = require('*/cartridge/scripts/guard');
 /**

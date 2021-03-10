@@ -1,15 +1,33 @@
+'use strict';
+
+/*
+eslint no-undef: "off"
+*/
+/*
+eslint no-alert: "off"
+*/
 module.exports = function () {
     require('./connectionKatapult');
 
-    $(".primary-logo").after('<a class="btn-katapult-preapprove lg-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
-    $(".menu-utility-user").append('<a class="btn-katapult-preapprove md-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
+    $('.primary-logo').after('<a class="btn-katapult-preapprove lg-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
+    $('.menu-utility-user').append('<a class="btn-katapult-preapprove md-hide d-md-inline-block mt-3 ml-2" href="#"></a>');
 
     $('.btn-katapult-preapprove').on('click', function () {
         katapult.preapprove();
     });
- /**
- * Katapult prepare checkout object.
- */
+    /**
+    * Katapult prepare checkout object.
+    * @param {Object}  itemsCart Items in the cart.
+    * @param {array}  billingArray customer billing data.
+    * @param {string} customerID customer ID.
+    * @param {Object} shippingAddressData customer address data.
+    * @param {string} customerEmail customer email.
+    * @param {num}  totalShippingCost shipping cost.
+    * @param {num} orderDiscount order discount.
+    * @param {num} shippingDiscount shipping discount.
+    * @param {string} katapultOk OK URL.
+    * @param {string} katapultFail Fail URL.
+    */
     function getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail) {
         var checkout = {
             customer: {
@@ -23,8 +41,8 @@ module.exports = function () {
                 customer_id: customerID,
                 shipping_amount: totalShippingCost,
                 discounts: [
-                    { discount_name: "orderDiscount", discount_amount: orderDiscount },
-                    { discount_name: "shippingDiscount", discount_amount: shippingDiscount }
+                    { discount_name: 'orderDiscount', discount_amount: orderDiscount },
+                    { discount_name: 'shippingDiscount', discount_amount: shippingDiscount }
                 ]
             },
 
@@ -33,11 +51,11 @@ module.exports = function () {
                 cancel: katapultFail
             }
 
-            };
-            katapult.checkout.set(checkout);
-            katapult.checkout.load();
+        };
+        katapult.checkout.set(checkout);
+        katapult.checkout.load();
     }
- /**
+    /**
  * Katapult open modal.
  */
     $('#katapultTrue').on('click', function () {
@@ -64,7 +82,7 @@ module.exports = function () {
                 var billingData = data.order.billing.billingAddress;
                 var billingArray = {
                     first_name: billingData.firstName,
-                    middle_name: "",
+                    middle_name: '',
                     last_name: billingData.lastName,
                     address: billingData.address1,
                     address2: billingData.address2,
@@ -80,10 +98,10 @@ module.exports = function () {
                 var itemsShipping = data.order.shipping;
                 var s = 0;
                 var shippingAddressData = {};
-                for (s in itemsShipping) {
-                        shippingAddressData = {
+                for (s = 0; s < itemsShipping.length; s += 1) {
+                    shippingAddressData = {
                         first_name: itemsShipping[s].shippingAddress.firstName,
-                        middle_name: "",
+                        middle_name: '',
                         last_name: itemsShipping[s].shippingAddress.lastName,
                         address: itemsShipping[s].shippingAddress.address1,
                         address2: itemsShipping[s].shippingAddress.address2,
@@ -99,27 +117,27 @@ module.exports = function () {
                 if (oTotal >= katapultMin && oTotal <= katapultMax) {
                     getBasket(itemsCart, billingArray, customerID, shippingAddressData, customerEmail, totalShippingCost, orderDiscount, shippingDiscount, katapultOk, katapultFail);
                 } else {
-                    alert("Katapult cannot be used to this payment, the payment amount has to be between " + katapultMin + " and " + katapultMax);
+                    alert('Katapult cannot be used to this payment, the payment amount has to be between ' + katapultMin + ' and ' + katapultMax);
                 }
             }
         });
     });
-/**
+    /**
  * Katapult auto open modal.
  */
-$(document).ready(function () {
-    $('.payment-method-options').click(function () {
-        var $selectPaymentMethod = $('.payment-method-options');
-        var selectedPaymentMethod = $selectPaymentMethod.find(':checked').val();
+    $(document).ready(function () {
+        $('.payment-method-options').click(function () {
+            var $selectPaymentMethod = $('.payment-method-options');
+            var selectedPaymentMethod = $selectPaymentMethod.find(':checked').val();
 
-        if (selectedPaymentMethod !== "KATAPULT") {
-              $(".div-KATAPULT").hide();
-        } else {
-              $(".div-KATAPULT").show();
+            if (selectedPaymentMethod !== 'KATAPULT') {
+                $('.div-KATAPULT').hide();
+            } else {
+                $('.div-KATAPULT').show();
+            }
+        });
+        if ($('#katapultTrue').length) {
+            $('#katapultTrue').trigger('click');
         }
     });
-    if ($("#katapultTrue").length) {
-        $("#katapultTrue").trigger("click");
-    }
-});
 };

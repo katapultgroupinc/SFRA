@@ -1,3 +1,11 @@
+'use strict';
+
+/*
+eslint no-undef: "off"
+*/
+/*
+eslint no-alert: "off"
+*/
 var addressHelpers = require('base/checkout/address');
 var shippingHelpers = require('base/checkout/shipping');
 var billingHelpers = require('base/checkout/billing');
@@ -5,6 +13,9 @@ var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
 var scrollAnimate = require('base/components/scrollAnimate');
 
+/*
+eslint no-restricted-globals: ["error", "event"]
+*/
 /**
  * Create the jQuery Checkout Plugin.
  *
@@ -47,7 +58,17 @@ var scrollAnimate = require('base/components/scrollAnimate');
             'placeOrder',
             'submitted'
         ];
-
+        /**
+         * Hide some DOM Objects based on currentStage
+         * @param {number} currentStage - The current stage the user is currently on in the checkout
+         */
+        function hideFaker(currentStage) {
+            if (checkoutStages[currentStage] === 'shipping') {
+                $('#katapultFake').css('display', 'none');
+            } else {
+                $('#katapultFake').css('display', 'block');
+            }
+        }
         /**
          * Updates the URL to determine stage
          * @param {number} currentStage - The current stage the user is currently on in the checkout
@@ -65,13 +86,6 @@ var scrollAnimate = require('base/components/scrollAnimate');
             hideFaker(currentStage);
         }
 
-        function hideFaker(currentStage) {
-            if (checkoutStages[currentStage] === 'shipping') {
-                $('#katapultFake').css('display', 'none');
-            } else {
-                $('#katapultFake').css('display', 'block');
-            }
-        }
         //
         // Local member methods of the Checkout plugin
         //
@@ -155,7 +169,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                             type: 'post',
                             data: shippingFormData,
                             success: function (data) {
-                                 // enable the next:Payment button here
+                                // enable the next:Payment button here
                                 $('body').trigger('checkout:enableButton', '.next-step-button button');
                                 shippingHelpers.methods.shippingFormResponse(defer, data);
                             },
@@ -171,7 +185,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                         });
                     }
                     return defer;
-                } else if (stage === 'payment') {
+                } if (stage === 'payment') {
                     //
                     // Submit the Billing Address Form
                     //
@@ -245,10 +259,10 @@ var scrollAnimate = require('base/components/scrollAnimate');
                             }
                         }
                     }
-                     // disable the next:Place Order button here
+                    // disable the next:Place Order button here
                     $('body').trigger('checkout:disableButton', '.next-step-button button');
-                    $("#katapultTest").val();
-                    if (($('.payment-information').data('payment-method-id') === "KATAPULT" && $("#katapultTest").val() === "true") || $('.payment-information').data('payment-method-id') !== "KATAPULT") {
+                    $('#katapultTest').val();
+                    if (($('.payment-information').data('payment-method-id') === 'KATAPULT' && $('#katapultTest').val() === 'true') || $('.payment-information').data('payment-method-id') !== 'KATAPULT') {
                         $.ajax({
                             url: $('#dwfrm_billing').attr('action'),
                             method: 'POST',
@@ -281,8 +295,8 @@ var scrollAnimate = require('base/components/scrollAnimate');
                                     defer.reject();
                                 } else {
                                     // open modal automaty
-                                    if ($('.payment-information').data('payment-method-id') === "KATAPULT") {
-                                        $('#katapultTrue').trigger("click");
+                                    if ($('.payment-information').data('payment-method-id') === 'KATAPULT') {
+                                        $('#katapultTrue').trigger('click');
                                         $('#katapultTrue').css('display', 'none');
                                         $('.place-order').hide();
                                         $('#checkoutKatapult').show();
@@ -322,9 +336,9 @@ var scrollAnimate = require('base/components/scrollAnimate');
                             }
                         });
                     } else {
-                        alert("Katapult cannot be used to this payment, the payment amount has to be between " + $("#katapultTest").data("min") + " and " + $("#katapultTest").data("max"));
+                        alert('Katapult cannot be used to this payment, the payment amount has to be between ' + $('#katapultTest').data('min') + ' and ' + $('#katapultTest').data('max'));
                         $('body').trigger('checkout:enableButton', '.next-step-button button');
-                        return;
+                        return false;
                     }
                     return defer;
                 } if (stage === 'placeOrder') {
@@ -405,7 +419,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
                 //
                 $('.shipping-summary .edit-button', plugin).on('click', function () {
                     var checkoutBegin = $('#checkoutBegin').data('begin');
-                    if ($('.payment-information').data('payment-method-id') === "KATAPULT") {
+                    if ($('.payment-information').data('payment-method-id') === 'KATAPULT') {
                         $('#checkoutKatapult').hide();
                         $.ajax({
                             url: checkoutBegin,
@@ -428,7 +442,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
 
                 $('.payment-summary .edit-button', plugin).on('click', function () {
                     var checkoutBegin = $('#checkoutBegin').data('begin');
-                    if ($('.payment-information').data('payment-method-id') === "KATAPULT") {
+                    if ($('.payment-information').data('payment-method-id') === 'KATAPULT') {
                         $('#checkoutKatapult').hide();
                         $.ajax({
                             url: checkoutBegin,
@@ -514,7 +528,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
             handleNextStage: function (bPushState) {
                 if (members.currentStage < checkoutStages.length - 1) {
                     // move stage forward
-                    members.currentStage++;
+                    members.currentStage += 1;
 
                     //
                     // show new stage in url (e.g.payment)
@@ -534,7 +548,7 @@ var scrollAnimate = require('base/components/scrollAnimate');
             handlePrevStage: function () {
                 if (members.currentStage > 0) {
                     // move state back
-                    members.currentStage--;
+                    members.currentStage -= 1;
                     updateUrl(members.currentStage);
                 }
 
