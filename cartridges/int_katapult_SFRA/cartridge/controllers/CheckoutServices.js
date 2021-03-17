@@ -79,7 +79,7 @@ server.prepend(
                 return;
             }
 
-            hasKatapult = req.session.privacyCache.get('hasKatapult');
+            var hasKatapult = req.session.privacyCache.get('hasKatapult');
 
             if (hasKatapult !== 'yes') {
                 if (isKatapult) {
