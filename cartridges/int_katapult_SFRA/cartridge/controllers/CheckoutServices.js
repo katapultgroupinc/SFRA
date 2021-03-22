@@ -71,10 +71,17 @@ server.prepend(
             var viewData = {};
             var paymentForm = server.forms.getForm('billing');
             var paymentMethodIdValue = paymentForm.paymentMethod.value;
-
+            var BasketMgr = require('dw/order/BasketMgr');
             isKatapult = paymentMethodIdValue === 'KATAPULT';
 
             if (!isKatapult) {
+                Transaction.wrap(function () {
+                    var currentBasket = BasketMgr.getCurrentBasket();
+                    // Remove any PaymentInstruments to start a new payment
+                    if (currentBasket) {
+                        currentBasket.removeAllPaymentInstruments();
+                    }
+                });
                 next();
                 return;
             }
@@ -159,7 +166,6 @@ server.prepend(
                     return;
                 }
 
-                var BasketMgr = require('dw/order/BasketMgr');
                 var HookMgr = require('dw/system/HookMgr');
                 var PaymentMgr = require('dw/order/PaymentMgr');
                 // var PaymentInstrument = require('dw/order/PaymentInstrument');

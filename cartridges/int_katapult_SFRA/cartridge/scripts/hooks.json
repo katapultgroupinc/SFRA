@@ -1,6 +1,18 @@
 {
 	"hooks": [
 		{
+            "name": "dw.order.calculate",
+            "script": "./hooks/cart/calculate.js"
+        },
+        {
+            "name": "dw.order.calculateShipping",
+            "script": "./hooks/cart/calculate.js"
+        },
+        {
+            "name": "dw.order.calculateTax",
+            "script": "./hooks/cart/calculate.js"
+        },
+		{
 			"name": "app.payment.form.processor.katapult",
 			"script": "./hooks/payment/processor/katapult_form_processor"
 		},
