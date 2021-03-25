@@ -35,7 +35,7 @@ function sleep(milliseconds) {
 function showConfirmation(order, basketID) {
     var isRecordExist = CustomObjectMgr.getCustomObject('katapult_transactions', basketID);
 
-    isKat = (order.paymentInstrument.paymentMethod === 'KATAPULT');
+    var isKat = (order.paymentInstrument.paymentMethod === 'KATAPULT');
 
     if (!isKat) {
         if (isRecordExist) {
