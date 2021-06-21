@@ -118,7 +118,7 @@
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
-                <default-value>https://sandbox.katapult.com/</default-value>
+                <default-value>https://sandbox.katapult.com</default-value>
             </attribute-definition>
 			<attribute-definition attribute-id="KAT_maxValue">
                 <display-name xml:lang="x-default">Max. Value for transactions</display-name>

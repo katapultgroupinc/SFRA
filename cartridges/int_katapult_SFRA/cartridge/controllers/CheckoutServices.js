@@ -9,6 +9,19 @@ server.extend(checkoutService);
 var URLUtils = require('dw/web/URLUtils');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var Transaction = require('dw/system/Transaction');
+var onRequest = require('*/cartridge/scripts/request/onRequest');
+var Site = require('dw/system/Site');
+var KAT_environment = Site.current.getCustomPreferenceValue('KAT_environment');
+
+/**
+*  Formating Katapul URL
+*/
+KAT_environment = KAT_environment.trim();
+var index = KAT_environment.lastIndexOf("/",KAT_environment.length);
+
+if (KAT_environment[KAT_environment.length-1] == "/") {
+  KAT_environment = KAT_environment.slice(0,index);
+}
 
 /**
 *  sleep to wait SF internal process
@@ -29,7 +42,8 @@ server.prepend(
     'SubmitPayment',
     server.middleware.https,
     function (req, res, next) {
-        res.setHttpHeader('Access-Control-Allow-Origin', req.httpHeaders.origin);
+        // res.setHttpHeader('Access-Control-Allow-Origin', req.httpHeaders.origin);
+        onRequest.setResponseHeaders(res);
         if (req.body && req.httpMethod === 'POST') {
             var bodyObject = JSON.parse(req.body);
             // If it comes from katapult
@@ -62,7 +76,7 @@ server.prepend(
             } else { // else go to the next controller
                 next();
             }
-        } else if (req.httpHeaders.origin !== 'https://sandbox.katapult.com') {
+        } else if (req.httpHeaders.origin !== KAT_environment) {
             var PaymentManager = require('dw/order/PaymentMgr');
             var HookManager = require('dw/system/HookMgr');
             var Resource = require('dw/web/Resource');

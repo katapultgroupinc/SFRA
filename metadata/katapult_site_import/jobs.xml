@@ -8,7 +8,7 @@
             <step step-id="shipping" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">shipping</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -16,7 +16,7 @@
             <step step-id="cancel" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">cancel</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -24,7 +24,7 @@
             <step step-id="complete" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">complete</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -32,7 +32,7 @@
             <step step-id="cancelItem" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">cancelItem</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -67,7 +67,7 @@
             <step step-id="shipping" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">shipping</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -75,7 +75,7 @@
             <step step-id="cancel" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">cancel</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -83,7 +83,7 @@
             <step step-id="complete" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SG/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">complete</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
@@ -91,7 +91,7 @@
             <step step-id="cancelItem" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_katapult_SFRA/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_katapult_core/cartridge/scripts/job/katapultOrderUpdate.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">cancelItem</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>
