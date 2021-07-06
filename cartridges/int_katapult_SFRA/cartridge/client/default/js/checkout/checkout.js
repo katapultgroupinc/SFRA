@@ -264,7 +264,7 @@ eslint no-restricted-globals: ["error", "event"]
                     $('#katapultTest').val();
                     if (($('.payment-information').data('payment-method-id') === 'KATAPULT' && $('#katapultTest').val() === 'true') || $('.payment-information').data('payment-method-id') !== 'KATAPULT') {
                         $.ajax({
-                            url: $('#dwfrm_billing').attr('action'),
+                            url: $('#katapultSubmit').data('katapult-submit'),
                             method: 'POST',
                             data: paymentForm,
                             success: function (data) {

@@ -35,14 +35,22 @@ function sleep(milliseconds) {
     } while (currentDate - date < milliseconds);
 }
 
+server.post(
+    'SubmitPaymentKatapult',
+    server.middleware.https,
+    function (req, res, next) {
+        onRequest.setResponseHeaders(res);
+        next();
+    }
+);
+
 /**
  *  Handle Ajax payment (and billing) form submit
  */
 server.prepend(
-    'SubmitPayment',
+    'SubmitPaymentKatapult',
     server.middleware.https,
     function (req, res, next) {
-        // res.setHttpHeader('Access-Control-Allow-Origin', req.httpHeaders.origin);
         onRequest.setResponseHeaders(res);
         if (req.body && req.httpMethod === 'POST') {
             var bodyObject = JSON.parse(req.body);
