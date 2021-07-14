@@ -11,16 +11,16 @@ var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var Transaction = require('dw/system/Transaction');
 var onRequest = require('*/cartridge/scripts/request/onRequest');
 var Site = require('dw/system/Site');
-var KAT_environment = Site.current.getCustomPreferenceValue('KAT_environment');
+var KatEnvironment = Site.current.getCustomPreferenceValue('KAT_environment');
 
 /**
 *  Formating Katapul URL
 */
-KAT_environment = KAT_environment.trim();
-var index = KAT_environment.lastIndexOf("/",KAT_environment.length);
+KatEnvironment = KatEnvironment.trim();
+var index = KatEnvironment.lastIndexOf('/', KatEnvironment.length);
 
-if (KAT_environment[KAT_environment.length-1] == "/") {
-  KAT_environment = KAT_environment.slice(0,index);
+if (KatEnvironment[KatEnvironment.length - 1] === '/') {
+    KatEnvironment = KatEnvironment.slice(0, index);
 }
 
 /**
@@ -84,7 +84,7 @@ server.prepend(
             } else { // else go to the next controller
                 next();
             }
-        } else if (req.httpHeaders.origin !== KAT_environment) {
+        } else if (req.httpHeaders.origin !== KatEnvironment) {
             var PaymentManager = require('dw/order/PaymentMgr');
             var HookManager = require('dw/system/HookMgr');
             var Resource = require('dw/web/Resource');
