@@ -263,8 +263,10 @@ eslint no-restricted-globals: ["error", "event"]
                     $('body').trigger('checkout:disableButton', '.next-step-button button');
                     $('#katapultTest').val();
                     if (($('.payment-information').data('payment-method-id') === 'KATAPULT' && $('#katapultTest').val() === 'true') || $('.payment-information').data('payment-method-id') !== 'KATAPULT') {
+                        var urlSubmitPayment = ($('.payment-information').data('payment-method-id') == 'KATAPULT' ? $('#katapultSubmit').data('katapult-submit') : $('#dwfrm_billing').attr('action'));
+                        
                         $.ajax({
-                            url: $('#katapultSubmit').data('katapult-submit'),
+                            url: urlSubmitPayment,
                             method: 'POST',
                             data: paymentForm,
                             success: function (data) {

@@ -15,9 +15,13 @@ server.prepend('Begin', function (req, res, next) {
     req.session.privacyCache.set('hasKatapult', '');
     var BasketMgr = require('dw/order/BasketMgr');
     var currentBasket = BasketMgr.getCurrentBasket();
-    Transaction.wrap(function () {
-        currentBasket.removeAllPaymentInstruments();
-    });
+    var KatapultPI = currentBasket.getPaymentInstruments('KATAPULT');
+
+    if(KatapultPI.length > 0) {
+        Transaction.wrap(function () {
+            currentBasket.removeAllPaymentInstruments();
+        });
+    }
 
     res.json({
         success: true,
