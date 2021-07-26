@@ -35,7 +35,7 @@ server.get('infoShop', server.middleware.https, function (req, res, next) {
                 isLeasable = false;
             }
 
-            var price = itemsBasket[i].basePrice.value.toFixed(2);
+            var price = basketModel.items[i].price.sales.value.toFixed(2);
 
             itemsCart.push({
                 display_name: itemsBasket[i].productName,
