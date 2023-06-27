@@ -3,7 +3,6 @@
 ## Implemantation Guides ##
 
 1. [Instalation Guide SFRA Cartridge](#SFRA)
-2. [Instalation Guide SiteGenesis Cartridge](#SiteGenesis)
 
 
 <a name="SFRA"></a>

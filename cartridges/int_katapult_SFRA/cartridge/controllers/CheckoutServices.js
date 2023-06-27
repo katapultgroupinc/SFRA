@@ -545,15 +545,14 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
             order.custom.KAT_katapult_id = isRecordExist.custom.KAT_uid;
             order.custom.KAT_zibby_id = isRecordExist.custom.KAT_zibby_id;
             order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_PAID);
-            var paymentInstruments = order.getPaymentInstruments('KATAPULT');
-            if (paymentInstruments) {
-                for (var i = 0; i < paymentInstruments; i += 1) {
-                    paymentInstrument = paymentInstruments[i];
+            var paymentInstruments = order.getPaymentInstruments();
+             for (var i = 0; i < paymentInstruments.length; i++) {
+                    var paymentInstrument = paymentInstruments[i];
                     if (paymentInstrument.paymentMethod === 'KATAPULT') {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
+                        paymentInstrument.paymentTransaction.custom.KAT_UID = isRecordExist.custom.KAT_uid;
                     }
                 }
-            }
             CustomObjectMgr.remove(isRecordExist);
         });
     }
