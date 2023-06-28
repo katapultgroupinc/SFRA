@@ -3,8 +3,8 @@
 
 This integration is an option of the Katapult payment method for leasable products, which will be available at the payment stage of your checkout. If the end customer has at least one leasable product in the cart, the Katapult payment option will appear so that the buyer can purchase products using the Katapult payment method.
 
-SFRA version tested against version 5.0.1 or later, including: 5.3.0.
-Compatibility mode:  From 19.10 to 21.2 tested.
+SFRA version tested against version 6.3.
+Compatibility mode: 22.7 tested.
 Locales it can work with: Only en_US for this release.
 
 ## Implemantation Guides ##
