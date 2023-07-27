@@ -551,6 +551,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
                     if (paymentInstrument.paymentMethod === 'KATAPULT') {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
                         paymentInstrument.paymentTransaction.custom.KAT_UID = isRecordExist.custom.KAT_uid;
+                        paymentInstrument.paymentTransaction.type = PaymentTransaction.TYPE_CAPTURE;
                     }
                 }
             CustomObjectMgr.remove(isRecordExist);
