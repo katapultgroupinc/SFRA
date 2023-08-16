@@ -148,6 +148,15 @@ exports.ordersKat = {
         return callService(requestObject);
     },
 
+    callAynsOrder: function(orderPayload) {
+        var requestObject = {
+            endpoint: '/api/v3/application/sync/',
+            httpMethod: 'POST',
+            payload: orderPayload
+        };
+
+        return callService(requestObject);
+    },
     cancelItem: function(itemsObj, kat_uid) {
         var requestObject = {
             endpoint: '/api/v3/application/'+ kat_uid +'/cancel_item/',
@@ -157,7 +166,6 @@ exports.ordersKat = {
 
         return callService(requestObject);
     },
-
     connect: function(contentObj, apiEndPoint) {
         var requestObject = {
             endpoint: apiEndPoint,

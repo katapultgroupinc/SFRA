@@ -12,7 +12,7 @@ var Transaction = require('dw/system/Transaction');
 var onRequest = require('*/cartridge/scripts/request/onRequest');
 var Site = require('dw/system/Site');
 var KatEnvironment = Site.current.getCustomPreferenceValue('KAT_environment');
-
+var PaymentTransaction = require('dw/order/PaymentTransaction');
 /**
 *  Formating Katapul URL
 */
@@ -536,7 +536,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         });
         return next();
     }
-
     // Set katapult values
     if (isRecordExist) {
         Transaction.wrap(function () {
@@ -551,13 +550,46 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
                     if (paymentInstrument.paymentMethod === 'KATAPULT') {
                         paymentInstrument.paymentTransaction.transactionID = isRecordExist.custom.KAT_uid;
                         paymentInstrument.paymentTransaction.custom.KAT_UID = isRecordExist.custom.KAT_uid;
+                        paymentInstrument.paymentTransaction.custom.authCode = isRecordExist.custom.KAT_uid;
                         paymentInstrument.paymentTransaction.type = PaymentTransaction.TYPE_CAPTURE;
                     }
                 }
             CustomObjectMgr.remove(isRecordExist);
         });
     }
-
+    else
+    {
+    //---------------------Get katapult information based on Katapult service----------------//
+    var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
+    var callAynsOrder = {
+            order_id: basketID
+        };
+        var getAsyncResponse = connectionService.ordersKat.callAynsOrder(JSON.stringify(callAynsOrder));
+        if (getAsyncResponse.hasOwnProperty("error")) {
+            res.json({
+                error: true,
+                errorMessage: Resource.msg('error.technical', 'checkout', null)
+            });
+            return next();
+        } else {
+            Transaction.wrap(function () {
+                order.custom.KAT_customer_id = getAsyncResponse.customer_id;
+                order.custom.KAT_UID = getAsyncResponse.uid;
+                order.custom.KAT_katapult_id = getAsyncResponse.uid;
+                order.custom.KAT_zibby_id = getAsyncResponse.zibby_id;
+                order.setPaymentStatus(dw.order.Order.PAYMENT_STATUS_PAID);
+                var paymentInstruments = order.getPaymentInstruments();
+                 for (var i = 0; i < paymentInstruments.length; i++) {
+                        var paymentInstrument = paymentInstruments[i];
+                        if (paymentInstrument.paymentMethod === 'KATAPULT') {
+                            paymentInstrument.paymentTransaction.transactionID = getAsyncResponse.uid;
+                            paymentInstrument.paymentTransaction.custom.KAT_UID = getAsyncResponse.uid;
+                            paymentInstrument.paymentTransaction.type = PaymentTransaction.TYPE_CAPTURE;
+                        }
+                    }
+            });
+        }
+    }
     // Handles payment authorization
     var handlePaymentResult = COHelpers.handlePayments(order, order.orderNo);
     if (handlePaymentResult.error) {
@@ -608,8 +640,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     if (order.getCustomerEmail()) {
         COHelpers.sendConfirmationEmail(order, req.locale.id);
     }
-
-    var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var orderID = {
         order_id: order.orderNo
     };
