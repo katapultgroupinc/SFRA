@@ -536,6 +536,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         });
         return next();
     }
+    var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     // Set katapult values
     if (isRecordExist) {
         Transaction.wrap(function () {
@@ -560,7 +561,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     else
     {
     //---------------------Get katapult information based on Katapult service----------------//
-    var connectionService = require('*/cartridge/scripts/service/connectionKatapultService');
     var callAynsOrder = {
             order_id: basketID
         };
