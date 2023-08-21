@@ -5,8 +5,16 @@
             "script": "./hooks/cart/calculate.js"
         },
         {
+            "name": "dw.order.calculateKatapult",
+            "script": "./hooks/cart/calculateKatapult.js"
+        },
+        {
             "name": "dw.order.calculateShipping",
             "script": "./hooks/cart/calculate.js"
+        },
+        {
+            "name": "dw.order.calculateTaxKatapult",
+            "script": "./hooks/cart/calculateKatapult.js"
         },
         {
             "name": "dw.order.calculateTax",

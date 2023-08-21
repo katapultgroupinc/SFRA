@@ -76,11 +76,7 @@ function calculateTaxes(basket) {
             }
 
             // calculate the tax of the line item
-            if (!isKatapult) {
-                taxes.push({ uuid: lineItem.UUID, value: taxRate, amount: false });
-            } else {
-                taxes.push({ uuid: lineItem.UUID, value: taxRate, amount: false });
-            }
+                taxes.push({ uuid: lineItem.UUID, value: 0, amount: false });
             
             Logger.debug('2. Line Item {0} with Tax Class {1} and Tax Rate {2}', lineItem.lineItemText, lineItem.taxClassID, lineItem.taxRate);
         });

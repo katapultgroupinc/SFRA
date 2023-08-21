@@ -498,9 +498,9 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
-    // Calculate the basket
+    // Calculate the basket for sale tax
     Transaction.wrap(function () {
-        basketCalculationHelpers.calculateTotals(currentBasket);
+        basketCalculationHelpers.calculateTotalsKatapult(currentBasket);
     });
 
     // Re-validates existing payment instruments
@@ -526,7 +526,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         });
         return next();
     }
-
     // Creates a new order.
     var order = COHelpers.createOrder(currentBasket);
     if (!order) {
@@ -560,7 +559,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
     }
     else
     {
-    //---------------------Get katapult information based on Katapult service----------------//
+    //---------------------Get katapult order information----------------//
     var callAynsOrder = {
             order_id: basketID
         };
@@ -616,7 +615,7 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
 
         return next();
     }
-
+    
     // Places the order
     var placeOrderResult = COHelpers.placeOrder(order, fraudDetectionStatus);
     if (placeOrderResult.error) {
@@ -636,7 +635,6 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
             }
         });
     }
-
     if (order.getCustomerEmail()) {
         COHelpers.sendConfirmationEmail(order, req.locale.id);
     }

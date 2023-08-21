@@ -8,7 +8,6 @@ var processInclude = require('base/util');
 $(document).ready(function () {
     processInclude(require('./checkout/checkout'));
 });
-
 function checkForZibbyClose(response){
     if (!response.origin.includes("katapult.com")) return;
     try {
