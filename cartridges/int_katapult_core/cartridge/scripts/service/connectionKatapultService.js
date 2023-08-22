@@ -65,7 +65,13 @@ function getKatapultServiceDefinition() {
         },
 
         getResponseLogMessage: function (response) {
-            return response.error.message;
+            var responseMsg = 'Status Code: ' + response.statusCode +
+                '\n Status Message  : ' + response.statusMessage +
+                '\n Response : ' + response.text +
+                '\n Error : ' + response.errorText +
+                '\n Response Headers : ' + response.responseHeaders +
+                '\n Timeout : ' + response.timeout;
+            return responseMsg;
         }
     });
 }
