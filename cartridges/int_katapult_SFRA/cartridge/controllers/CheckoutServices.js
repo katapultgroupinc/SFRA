@@ -200,18 +200,17 @@ server.prepend(
                 var currentBasket = BasketMgr.getCurrentBasket();
                 var billingData = paymentFormResult.viewData;
 
-                // Removes all previous payment methods before creating new one
-                var paymentInstruments = currentBasket.getPaymentInstruments();
-                var iterator = paymentInstruments.iterator();
-                var paymentInstrument = null;
-                Transaction.wrap(function () {
-                    while (iterator.hasNext()) {
-                        paymentInstrument = iterator.next();
-                        currentBasket.removePaymentInstrument(paymentInstrument);
-                    }
-                });
-
                 if (!currentBasket) {
+                // Removes all previous payment methods before creating new one
+                    var paymentInstruments = currentBasket.getPaymentInstruments();
+                    var iterator = paymentInstruments.iterator();
+                    var paymentInstrument = null;
+                    Transaction.wrap(function () {
+                            while (iterator.hasNext()) {
+                                paymentInstrument = iterator.next();
+                                currentBasket.removePaymentInstrument(paymentInstrument);
+                            }
+                    });
                     delete billingData.paymentInformation;
                     req.session.privacyCache.set('hasKatapult', '');
                     res.json({
