@@ -35,6 +35,20 @@ function sleep(milliseconds) {
     } while (currentDate - date < milliseconds);
 }
 
+/**
+ *  Reset Katapult session value to prevent placing order while
+ *  submitting the payment method twice.
+ *  This endpoint is called every time we move between checkout steps.
+ */
+ server.get('ResetSession', function(req, res, next) {
+    req.session.privacyCache.set('hasKatapult', '');
+
+    res.json({
+        ok: true
+    });
+    return next();
+});
+
 server.post(
     'SubmitPaymentKatapult',
     server.middleware.https,

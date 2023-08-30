@@ -1,0 +1,48 @@
+body {
+  font-family: "Helvetica Neue";
+}
+
+html {
+  font-size: 0.875rem;
+  font-family: "Helvetica Neue";
+}
+
+@media (min-width: 544px) {
+  html {
+    font-size: 1rem;
+  }
+}
+@media (min-width: 769px) {
+  html {
+    font-size: 1.125rem;
+  }
+}
+h1 {
+  font-size: 4rem;
+  font-weight: 900;
+  font-family: "Helvetica Neue";
+}
+
+h2 {
+  font-size: 3rem;
+  font-weight: 900;
+  font-family: "Helvetica Neue";
+}
+
+h3 {
+  font-size: 1.67rem;
+  font-weight: 900;
+  font-family: "Helvetica Neue";
+  text-align: center;
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: "Helvetica Neue";
+}
+
+h5 {
+  font-weight: 600;
+  font-family: "Helvetica Neue";
+}

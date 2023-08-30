@@ -1,0 +1,18 @@
+.form-group.required .form-control-label::before {
+  content: "*";
+  color: #c00;
+}
+
+.login-oauth {
+  margin-top: 1rem;
+}
+
+.total-items-label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.total-price {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}

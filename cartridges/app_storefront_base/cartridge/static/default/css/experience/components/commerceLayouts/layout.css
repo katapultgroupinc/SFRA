@@ -1,0 +1,38 @@
+.page-container {
+  max-width: 1200px;
+}
+
+.region {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.region::before {
+  display: block;
+  content: "";
+  width: 100%;
+}
+
+/*
+    padding-top in percentages refers to parent width
+    this allows us to specify an aspect-ratio
+*/
+.region_landscape-large::before {
+  padding-top: 39.0625%;
+}
+
+.region_square::before {
+  padding-top: 100%;
+}
+
+.region_landscape-small::before {
+  padding-top: 50%;
+}
+
+.region_portrait-small::before {
+  padding-top: 200%;
+}
+
+div.sf-interactions-proxyHoverContainer a {
+  overflow: visible;
+}

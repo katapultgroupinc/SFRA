@@ -3,7 +3,7 @@
         <isinclude template="checkout/billing/paymentOptions/creditCardContent" />
     </isif>
 
-    <isif condition="${paymentOption.ID === 'KATAPULT'}">
+    <isif condition="${paymentOption.ID === 'KATAPULT' && pdict.enableKAT===true }">
         <isinclude template="checkout/billing/paymentOptions/katapultButton" />
     </isif>
 </isloop>
