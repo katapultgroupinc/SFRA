@@ -34,21 +34,6 @@ function sleep(milliseconds) {
         currentDate = Date.now();
     } while (currentDate - date < milliseconds);
 }
-
-/**
- *  Reset Katapult session value to prevent placing order while
- *  submitting the payment method twice.
- *  This endpoint is called every time we move between checkout steps.
- */
- server.get('ResetSession', function(req, res, next) {
-    req.session.privacyCache.set('hasKatapult', '');
-
-    res.json({
-        ok: true
-    });
-    return next();
-});
-
 server.post(
     'SubmitPaymentKatapult',
     server.middleware.https,
@@ -57,7 +42,16 @@ server.post(
         next();
     }
 );
-
+/**
+ *  Redirect to checkout place and order page
+ */
+server.get(
+    'CompletePaymentKatapult', function (req, res, next ) {
+        sleep(5000);
+        res.redirect(URLUtils.url('CheckoutServices-PlaceOrder').toString());
+        this.emit('route:Complete', req, res);
+    }
+);
 /**
  *  Handle Ajax payment (and billing) form submit
  */
@@ -121,15 +115,6 @@ server.prepend(
                 next();
                 return;
             }
-
-            var hasKatapult = req.session.privacyCache.get('hasKatapult');
-
-            if (hasKatapult !== 'yes') {
-                if (isKatapult) {
-                    req.session.privacyCache.set('hasKatapult', 'yes');
-                } else {
-                    req.session.privacyCache.set('hasKatapult', '');
-                }
                 // verify billing form data
                 var billingFormErrors = COHelpers.validateBillingForm(paymentForm.addressFields);
                 var contactInfoFormErrors = COHelpers.validateFields(paymentForm.contactInfoFields);
@@ -167,7 +152,6 @@ server.prepend(
 
                 var paymentProcessor = PaymentManager.getPaymentMethod(paymentMethodIdValue).getPaymentProcessor();
                 if (!paymentProcessor) {
-                    req.session.privacyCache.set('hasKatapult', '');
                     throw new Error(Resource.msg(
                         'error.payment.processor.missing',
                         'checkout',
@@ -190,8 +174,6 @@ server.prepend(
                 }
 
                 if (formFieldErrors.length || paymentFormResult.serverErrors) {
-                    // respond with form data and errors
-                    req.session.privacyCache.set('hasKatapult', '');
                     res.json({
                         form: paymentForm,
                         fieldErrors: formFieldErrors,
@@ -240,7 +222,6 @@ server.prepend(
                 var validatedProducts = validationHelpers.validateProducts(currentBasket);
                 if (validatedProducts.error) {
                     delete billingData.paymentInformation;
-                    req.session.privacyCache.set('hasKatapult', '');
                     res.json({
                         error: true,
                         cartError: true,
@@ -260,7 +241,6 @@ server.prepend(
                     if (!billingAddress) {
                         billingAddress = currentBasket.createBillingAddress();
                     }
-
                     billingAddress.setFirstName(billingData.address.firstName.value);
                     billingAddress.setLastName(billingData.address.lastName.value);
                     billingAddress.setAddress1(billingData.address.address1.value);
@@ -290,7 +270,6 @@ server.prepend(
                 // if there is no selected payment option and balance is greater than zero
                 if (!paymentMethodID && currentBasket.totalGrossPrice.value > 0) {
                     var noPaymentMethod = {};
-                    req.session.privacyCache.set('hasKatapult', '');
                     noPaymentMethod[billingData.paymentMethod.htmlName] = Resource.msg('error.no.selected.payment.method', 'payment', null);
 
                     delete billingData.paymentInformation;
@@ -306,7 +285,6 @@ server.prepend(
 
                 // check to make sure there is a payment processor
                 if (!PaymentMgr.getPaymentMethod(paymentMethodID).paymentProcessor) {
-                    req.session.privacyCache.set('hasKatapult', '');
                     throw new Error(Resource.msg(
                         'error.payment.processor.missing',
                         'checkout',
@@ -327,7 +305,6 @@ server.prepend(
 
                 if (result.error) {
                     delete billingData.paymentInformation;
-                    req.session.privacyCache.set('hasKatapult', '');
                     res.json({
                         form: billingForm,
                         fieldErrors: result.fieldErrors,
@@ -358,7 +335,6 @@ server.prepend(
                 );
 
                 if (calculatedPaymentTransaction.error) {
-                    req.session.privacyCache.set('hasKatapult', '');
                     res.json({
                         form: paymentForm,
                         fieldErrors: [],
@@ -398,18 +374,11 @@ server.prepend(
                     form: billingForm,
                     error: false
                 });
-
-                this.emit('route:Complete', req, res);
-            } else {
-                sleep(5000);
-                res.redirect(URLUtils.url('CheckoutServices-PlaceOrder').toString());
-                this.emit('route:Complete', req, res);
-            }
+            this.emit('route:Complete', req, res);
         } else {
             res.json({
                 message: 'OK'
             });
-
             this.emit('route:Complete', req, res);
         }
     }
@@ -654,10 +623,8 @@ server.prepend('PlaceOrder', server.middleware.https, function (req, res, next) 
         order_id: order.orderNo
     };
     connectionService.ordersKat.confirm(order.custom.KAT_UID, JSON.stringify(orderID));
-
     // Reset usingMultiShip after successful Order placement
     req.session.privacyCache.set('usingMultiShipping', false);
-    req.session.privacyCache.set('hasKatapult', '');
     res.redirect(URLUtils.url('Order-Confirm', 'ID', order.orderNo, 'token', order.orderToken).toString());
 
     return next();

@@ -94,7 +94,6 @@ server.prepend('Begin', function (req, res, next) {
     var katapultHelpers = require('*/cartridge/scripts/helpers/katapultHelpers');
     var enableKAT = katapultHelpers.getCustomLeasable();
     // clear katapult verification
-    req.session.privacyCache.set('hasKatapult', '');
     var BasketMgr = require('dw/order/BasketMgr');
     var currentBasket = BasketMgr.getCurrentBasket();
     var KatapultPI = currentBasket.getPaymentInstruments('KATAPULT');

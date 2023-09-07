@@ -433,16 +433,6 @@ var scrollAnimate = require('../components/scrollAnimate');
                     $('#katapultTrue').trigger('click');
                     $('#katapultTrue').css('display', 'none');
                 });
-        
-                $('body').on('katapultResetSession', function(e, stage) {
-                    if (stage !== 'placeOrder' && stage !== 'submitted') {
-                        var resetKatapultSessionURL = $('#katapultSubmit').data('katapult-reset');
-                        $.ajax({
-                            url: resetKatapultSessionURL,
-                            method: 'GET'
-                        });
-                    }
-                });
                 //
                 // Handle Next State button click
                 //
@@ -501,7 +491,6 @@ var scrollAnimate = require('../components/scrollAnimate');
              * The next checkout state step updates the css for showing correct buttons etc...
              */
             nextStage: function () {
-                members.resetKatapultSession();
                 var promise = members.updateStage();
                 promise.done(function () {
                     // Update UI with new stage
@@ -566,7 +555,6 @@ var scrollAnimate = require('../components/scrollAnimate');
                 }
 
                 $(plugin).attr('data-checkout-stage', checkoutStages[members.currentStage]);
-                members.resetKatapultSession();
             },
 
             /**
@@ -577,12 +565,6 @@ var scrollAnimate = require('../components/scrollAnimate');
                 members.currentStage = checkoutStages.indexOf(stageName);
                 updateUrl(members.currentStage);
                 $(plugin).attr('data-checkout-stage', checkoutStages[members.currentStage]);
-                members.resetKatapultSession();
-            },
-            resetKatapultSession: function () {
-                if (window.isKatapultEnabled) {
-                    $('body').trigger('katapultResetSession', checkoutStages[members.currentStage]);
-                }
             }
         };
      
